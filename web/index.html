@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bosco Example</title>
+    <link rel="icon" type="image/GIF" href="res/favicon64.png"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Chocolaty Shell for your Game">
+    <meta name="author" content="">
+
+    <style>
+        @font-face{
+            font-family:'opendyslexic';
+            font-style: normal;
+            font-weight: 400;
+            src: local('opendyslexic'),
+            url(res/fonts/OpenDyslexic-Regular.eot) format('embedded-opentype'),
+            url(res/fonts/OpenDyslexic-Regular.woff) format('woff'),
+            url(res/fonts/OpenDyslexic-Regular.otf) format('opentype'),
+            url(res/fonts/OpenDyslexic-Regular.ttf) format('truetype');
+        }
+        html {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-image:url(res/logo.png);
+        }
+        body {
+            padding:0;
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+        }
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body></body>
+<script src="src/stats.js/stats.min.js"></script>
+<script src="src/pixi.js/pixi.min.js"></script>
+<script src="src/tween.ts/tween.min.js"></script>
+<script src="src/entitas/entitas.min.js"></script>
+
+<script src="src/bosco/Input.js"></script>
+<script src="src/bosco/Rnd.js"></script>
+<script src="src/bosco/TrigLUT.js"></script>
+<script src="src/bosco/Utils.js"></script>
+<script src="src/bosco/Bosco.js"></script>
+
+
+<script src="src/example/extensions/Pool.js"></script>
+<script src="src/example/generatedComponents.js"></script>
+<script src="src/example/generatedExtensions.js"></script>
+<!--<script src="src/example/Constants.js"></script>-->
+<script src="src/example/systems/AddViewSystem.js"></script>
+<script src="src/example/systems/CreateGameBoardCacheSystem.js"></script>
+<script src="src/example/systems/DestroySystem.js"></script>
+<script src="src/example/systems/FallSystem.js"></script>
+<script src="src/example/systems/FillSystem.js"></script>
+<script src="src/example/systems/GameBoardSystem.js"></script>
+<script src="src/example/systems/ProcessInputSystem.js"></script>
+<script src="src/example/systems/RemoveViewSystem.js"></script>
+<script src="src/example/systems/RenderPositionSystem.js"></script>
+<script src="src/example/systems/ScoreSystem.js"></script>
+<script src="src/example/systems/AddViewSystem.js"></script>
+<script src="src/example/systems/RemoveViewSystem.js"></script>
+<script src="src/example/controllers/GameController.js"></script>
+<script src="src/example/controllers/InputController.js"></script>
+<script src="src/example/controllers/ScoreLabelController.js"></script>
+<script src="main.js"></script>
+
+</html>
