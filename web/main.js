@@ -10,17 +10,20 @@
  */
 bosco.start({
     "namespace": "matchone",
-    "width": 128*10,
-    "height": 128*11,
+    "width": 640,
+    "height": 640,
     "scale": false,
     "scaleType": "FILL",
     "stats": true,
     "storage": false,
     "options": {
-        "backgroundColor": "0x3c3c3c"
+        "antialiasing": false,
+        "transparent": false,
+        "resolution": window.devicePixelRatio,
+        "autoResize": true, "backgroundColor": "0x3c3c3c"
     },
     "assets": {
-        "Blocker": "res/images.json"
+        "images": (window.devicePixelRatio >= 2) ? "res/images@2x.json" : "res/images.json"
     },
     "resources": {
         "Blocker" : {"path": "Blocker.png"},
@@ -43,6 +46,6 @@ bosco.start({
         "userId": "",
         "playMusic": "true",
         "playSfx": "true"
-    };
+    }
 });
 

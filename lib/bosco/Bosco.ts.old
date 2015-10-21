@@ -63,28 +63,59 @@ module bosco {
      */
     constructor(config, resources) {
 
-      console.log('asset', window.devicePixelRatio, config.assets);
-
       var controllers = [];
       var temp:number;
       var previousTime:number;
 
+      config.height = config.height || window.innerHeight;
+      config.width = config.width || window.innerWidth;
+      console.log('config.height', config.height);
+      console.log('config.width', config.width);
+      if (isNaN(parseFloat(config.scaleType))) {
+        config.scaleType = ScaleType[config.scaleType];
+      }
+      if (!config.scale) {
+        console.log('window.innerWidth', window.innerWidth);
+        console.log('window.innerHeight', window.innerHeight);
+
+        config.width =  Math.pow(2, (~~(Math.log(config.width-1)/Math.log(2))+1));
+        config.height = Math.pow(2, (~~(Math.log(config.height-1)/Math.log(2))+1));
+
+        var scaleH = window.innerWidth/config.width;
+        var scaleV = window.innerHeight/config.height;
+        console.log('config.height', config.height);
+        console.log('config.width', config.width);
+
+
+        config.scale = Math.min(scaleH, scaleV);
+        console.log('config.scale', config.scale, ~~(128*config.scale));
+
+        config.scale = .25;
+      }
+
       this.config = bosco.config = config;
       this.resources = resources;
-
-      var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
-      renderer.view.style.position = 'absolute';
-      renderer.view.style.top = '0px';
-      renderer.view.style.left = '0px';
 
       var stage = this.stage = new Container();
       viewContainer = this.sprites = new Container();
       foreContainer = this.fore = new Container();
 
-      this.resize();
+      viewContainer.scale.set(config.scale, config.scale);
+      foreContainer.scale.set(config.scale, config.scale);
+      var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+      switch (config.scaleType) {
+        case ScaleType.FILL:
+          this.renderer.view.style.position = 'absolute';
+          break;
+        case ScaleType.FIXED:
+          renderer.view.style.position = 'absolute';
+          renderer.view.style.width = window.innerWidth + 'px';
+          renderer.view.style.height = window.innerHeight + 'px';
+          renderer.view.style.display = 'block';
+          break;
+      }
 
       document.body.appendChild(renderer.view);
-
       if (config.stats) {
         var stats = this.stats = new Stats();
         stats.setMode(0);
@@ -159,15 +190,17 @@ module bosco {
      * Resize window
      */
     resize = () => {
-      var ratio = Math.min(window.innerWidth/this.config.width,
-        window.innerHeight/this.config.height);
-
-      this.config.scale = ratio;
-      this.stage.scale.x = this.stage.scale.y = ratio;
-      this.renderer.resize(Math.ceil(this.config.width * ratio),
-        Math.ceil(this.config.height * ratio));
-
-
+      switch (this.config.scaleType) {
+        case ScaleType.FILL:
+          var height = window.innerHeight;
+          var width = window.innerWidth;
+          this.renderer.resize(width, height);
+          break;
+        case ScaleType.FIXED:
+          this.renderer.view.style.width = window.innerWidth + 'px';
+          this.renderer.view.style.height = window.innerHeight + 'px';
+          break;
+      }
     };
   }
 }

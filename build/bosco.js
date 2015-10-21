@@ -217,6 +217,108 @@ var bosco;
 })(bosco || (bosco = {}));
 //# sourceMappingURL=Utils.js.map
 /**
+ * Properties.ts
+ *
+ * Persist properties using LocalStorage
+ *
+ */
+var bosco;
+(function (bosco) {
+    var Properties = (function () {
+        function Properties() {
+        }
+        Properties.init = function (name, properties) {
+            if (Properties.db !== null)
+                return;
+            /** Initialize the db with the properties */
+            function initializeDb(db) {
+                if (db.isNew()) {
+                    db.createTable("settings", ["name", "value"]);
+                    db.createTable("leaderboard", ["date", "score"]);
+                    for (var key in properties) {
+                        if (properties.hasOwnProperty(key)) {
+                            db.insert("settings", {
+                                name: key,
+                                value: properties[key]
+                            });
+                        }
+                    }
+                    db.commit();
+                }
+            }
+            Properties.dbname = name;
+            Properties.properties = properties;
+            if (window['chrome']) {
+                chromeStorageDB(Properties.dbname, localStorage, function (db) { return initializeDb(Properties.db = db); });
+            }
+            else {
+                initializeDb(Properties.db = new localStorageDB(Properties.dbname));
+            }
+        };
+        /*
+         * Get Game Property from local storage
+         *
+         * @param property name
+         * @return property value
+         */
+        Properties.get = function (prop) {
+            return Properties.db.queryAll("settings", {
+                query: {
+                    name: prop
+                }
+            })[0].value;
+        };
+        Properties.setScore = function (score) {
+            var today = new Date();
+            var mm = (today.getMonth() + 1).toString();
+            if (mm.length === 1)
+                mm = '0' + mm;
+            var dd = today.getDate().toString();
+            if (dd.length === 1)
+                dd = '0' + dd;
+            var yyyy = today.getFullYear().toString();
+            var yyyymmdd = yyyy + mm + dd;
+            if (0 === Properties.db.queryAll('leaderboard', { query: { date: yyyymmdd } }).length) {
+                Properties.db.insert('leaderboard', { date: yyyymmdd, score: score });
+            }
+            else {
+                Properties.db.update('leaderboard', { date: yyyymmdd }, function (row) {
+                    if (score > row.score) {
+                        row.score = score;
+                    }
+                    return row;
+                });
+            }
+            Properties.db.commit();
+        };
+        Properties.getLeaderboard = function (count) {
+            return Properties.db.queryAll('leaderboard', { limit: count, sort: [['score', 'DESC']] });
+        };
+        Properties.db = null;
+        Properties.dbname = "";
+        Properties.properties = null;
+        /*
+         * Set Game Property in local storage
+         *
+         * @param property name
+         * @param property value
+         * @return nothing
+         */
+        Properties.set = function (prop, value) {
+            Properties.db.update("settings", {
+                name: prop
+            }, function (row) {
+                row.value = "" + value;
+                return row;
+            });
+            Properties.db.commit();
+        };
+        return Properties;
+    })();
+    bosco.Properties = Properties;
+})(bosco || (bosco = {}));
+//# sourceMappingURL=Properties.js.map
+/**
  * Bosco.ts
  *
  * Game Shell
@@ -241,6 +343,9 @@ var bosco;
      * Load assets and start
      */
     function start(config) {
+        //if (config.properties) {
+        //  Properties.init(config.namespace, config.properties);
+        //}
         for (var asset in config.assets) {
             PIXI.loader.add(asset, config.assets[asset]);
         }
@@ -270,50 +375,25 @@ var bosco;
              * Resize window
              */
             this.resize = function () {
-                switch (_this.config.scaleType) {
-                    case ScaleType.FILL:
-                        var height = window.innerHeight;
-                        var width = window.innerWidth;
-                        _this.renderer.resize(width, height);
-                        break;
-                    case ScaleType.FIXED:
-                        _this.renderer.view.style.width = window.innerWidth + 'px';
-                        _this.renderer.view.style.height = window.innerHeight + 'px';
-                        break;
-                }
+                var ratio = Math.min(window.innerWidth / _this.config.width, window.innerHeight / _this.config.height);
+                _this.config.scale = ratio;
+                _this.stage.scale.x = _this.stage.scale.y = ratio;
+                _this.renderer.resize(Math.ceil(_this.config.width * ratio), Math.ceil(_this.config.height * ratio));
             };
+            console.log('asset', window.devicePixelRatio, config.assets);
             var controllers = [];
             var temp;
             var previousTime;
-            config.height = config.height || window.innerHeight;
-            config.width = config.width || window.innerWidth;
-            if (isNaN(parseFloat(config.scaleType))) {
-                config.scaleType = ScaleType[config.scaleType];
-            }
-            if (!config.scale) {
-                var scaleH = window.innerWidth / config.width;
-                var scaleV = window.innerHeight / config.height;
-                config.scale = Math.min(scaleH, scaleV);
-            }
             this.config = bosco.config = config;
             this.resources = resources;
+            var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+            renderer.view.style.position = 'absolute';
+            renderer.view.style.top = '0px';
+            renderer.view.style.left = '0px';
             var stage = this.stage = new Container();
             viewContainer = this.sprites = new Container();
             foreContainer = this.fore = new Container();
-            viewContainer.scale.set(config.scale, config.scale);
-            foreContainer.scale.set(config.scale, config.scale);
-            var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
-            switch (config.scaleType) {
-                case ScaleType.FILL:
-                    this.renderer.view.style.position = 'absolute';
-                    break;
-                case ScaleType.FIXED:
-                    renderer.view.style.position = 'absolute';
-                    renderer.view.style.width = window.innerWidth + 'px';
-                    renderer.view.style.height = window.innerHeight + 'px';
-                    renderer.view.style.display = 'block';
-                    break;
-            }
+            this.resize();
             document.body.appendChild(renderer.view);
             if (config.stats) {
                 var stats = this.stats = new Stats();

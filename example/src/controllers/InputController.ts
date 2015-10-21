@@ -25,7 +25,7 @@ module matchone {
         var pos = Input.mousePosition;
         var children = viewContainer.children;
         for (var i=0, l=children.length; i<l; i++) {
-          var child =children[i];
+          var child = children[i];
           if (child.containsPoint(pos)) {
             var w = ~~(child.width * scale);
             var x = ~~((pos.x-w)/w);

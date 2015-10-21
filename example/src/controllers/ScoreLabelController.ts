@@ -14,7 +14,7 @@ module matchone {
 
     start() {
 
-      this.label = new Text('Score', {font:'bold 80px Arial', fill:'white'});
+      this.label = new Text('Score', {font:'bold 20px Arial', fill:'white'});
       this.label.position.set((bosco.config.width-this.label.width)/2, 10);
       viewContainer.addChild(this.label);
       var pool = Pools.pool;
