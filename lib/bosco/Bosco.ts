@@ -32,6 +32,10 @@ module bosco {
    * Load assets and start
    */
   export function start(config) {
+    if (config.properties) {
+      Properties.init(config.namespace, config.properties);
+    }
+
     for (var asset in config.assets) {
       PIXI.loader.add(asset, config.assets[asset]);
     }

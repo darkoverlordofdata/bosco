@@ -35,6 +35,14 @@ bosco.start({
         "GameController",
         "InputController",
         "ScoreLabelController"
-    ]
+    ],
+    "properties": {
+        "skip": "false",
+        "leaderboard": "off",
+        "player": "",
+        "userId": "",
+        "playMusic": "true",
+        "playSfx": "true"
+    };
 });
 

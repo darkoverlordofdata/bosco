@@ -9,8 +9,11 @@
 Bosco is not a game engine.
 Bosco is...
 * A chocolaty shell for your code
-* [An insane hologramic monkey ](http://bosco.darkoverlordofdata.com/)
+* [An insane hologramic monkey](http://bosco.darkoverlordofdata.com/)
 * A game shell that connects your game to the browswer
+
+    "chromestoragedb": "git://github.com/darkoverlordofdata/chromeStorageDB",
+    "localstoragedb": "git://github.com/knadh/localStorageDB",
 
 
 # MIT License

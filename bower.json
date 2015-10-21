@@ -22,6 +22,8 @@
     "google-closure-library": "*"
   },
   "dependencies": {
+    "chromestoragedb": "git://github.com/darkoverlordofdata/chromeStorageDB",
+    "localstoragedb": "git://github.com/knadh/localStorageDB",
     "entitas": "git://github.com/darkoverlordofdata/entitas-ts",
     "pixi.js": "~3.0.8",
     "stats.js": "*",
@@ -34,6 +36,8 @@
     ],
     "path": "web/src",
     "sources": {
+      "chromestoragedb": "packages/chromestoragedb/chromestoragedb.js",
+      "localstoragedb": "packages/localstoragedb/localstoragedb.js",
       "entitas": "packages/entitas/build/entitas.min.js",
       "stats.js": "packages/stats.js/build/stats.min.js",
       "pixi.js": "packages/pixi.js/bin/pixi.min.js",
