@@ -63,8 +63,6 @@ module bosco {
      */
     constructor(config, resources) {
 
-      console.log('asset', window.devicePixelRatio, config.assets);
-
       var controllers = [];
       var temp:number;
       var previousTime:number;

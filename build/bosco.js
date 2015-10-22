@@ -380,7 +380,6 @@ var bosco;
                 _this.stage.scale.x = _this.stage.scale.y = ratio;
                 _this.renderer.resize(Math.ceil(_this.config.width * ratio), Math.ceil(_this.config.height * ratio));
             };
-            console.log('asset', window.devicePixelRatio, config.assets);
             var controllers = [];
             var temp;
             var previousTime;
