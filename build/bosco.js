@@ -343,9 +343,9 @@ var bosco;
      * Load assets and start
      */
     function start(config) {
-        //if (config.properties) {
-        //  Properties.init(config.namespace, config.properties);
-        //}
+        if (config.properties) {
+            bosco.Properties.init(config.namespace, config.properties);
+        }
         for (var asset in config.assets) {
             PIXI.loader.add(asset, config.assets[asset]);
         }
