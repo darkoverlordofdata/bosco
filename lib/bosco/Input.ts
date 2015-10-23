@@ -66,6 +66,22 @@ module bosco.utils {
 
     private onTouchStart = (event) => {
       event = event.targetTouches ? event.targetTouches[0] : event;
+
+      if (bosco.isMobile() || bosco.config.fullScreen) {
+        try {
+          if (document.documentElement['requestFullscreen']) {
+            document.documentElement['requestFullscreen']();
+          } else if (document.documentElement['mozRequestFullScreen']) {
+            document.documentElement['mozRequestFullScreen']();
+          } else if (document.documentElement['webkitRequestFullscreen']) {
+            document.documentElement['webkitRequestFullscreen']();
+          } else if (document.documentElement['msRequestFullscreen']) {
+            document.documentElement['msRequestFullscreen']();
+          }
+        } catch (e) {}
+
+      }
+
       this.mouseDown = true;
       this.mouseButtonDown = true;
       this.mousePosition.x = parseInt(event.clientX);
