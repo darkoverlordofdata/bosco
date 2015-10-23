@@ -1,6 +1,6 @@
 # Bosco 
 
-![Bosco] [https://github.com/darkoverlordofdata/bosco/raw/master/web/res/favicon.png] 
+![Bosco] (https://github.com/darkoverlordofdata/bosco/raw/master/web/res/favicon.png)
 
 
            __  __         ___                            ___  ___
