@@ -15,12 +15,19 @@ module bosco {
   }
 
   /**
-   * Builds a composited sprite
+   * Make 'n' Bake:  a composite sprite
    *
-   * @param name  resource name
-   * @returns {PIXI.Sprite}
+   * @param name
+   * @param bake
+   * @returns {Sprite}
    */
-  export function prefab(name): Sprite {
+  export function prefab(name, bake:boolean=true): Sprite {
+    var s = _prefab(name);
+    s.cacheAsBitmap = bake;
+    return s;
+  }
+
+  function _prefab(name): Sprite {
 
     var config = bosco.config.resources[name];
 

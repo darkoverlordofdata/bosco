@@ -14,6 +14,7 @@ module bosco {
   declare var Stats;
   declare var viewContainer;
   declare var foreContainer;
+  declare var dat;
 
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;
@@ -32,7 +33,7 @@ module bosco {
    * Load assets and start
    */
   export function start(config) {
-    if (config.properties) {
+    if (Properties && config.properties) {
       Properties.init(config.namespace, config.properties);
     }
 
