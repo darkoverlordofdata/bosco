@@ -93,7 +93,6 @@ var bosco;
         utils.Input = Input;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
-//# sourceMappingURL=Input.js.map
 var bosco;
 (function (bosco) {
     var utils;
@@ -132,7 +131,6 @@ var bosco;
         utils.Rnd = Rnd;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
-//# sourceMappingURL=Rnd.js.map
 var bosco;
 (function (bosco) {
     var utils;
@@ -220,7 +218,6 @@ var bosco;
  authors and should not be interpreted as representing official policies, either expressed
  or implied, of GAMADU.COM.
  */
-//# sourceMappingURL=Timer.js.map
 var bosco;
 (function (bosco) {
     var utils;
@@ -268,7 +265,6 @@ var bosco;
         utils.TrigLUT = TrigLUT;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
-//# sourceMappingURL=TrigLUT.js.map
 /**
  * Utils.ts
  *
@@ -331,7 +327,6 @@ var bosco;
         }
     }
 })(bosco || (bosco = {}));
-//# sourceMappingURL=Utils.js.map
 /**
  * Properties.ts
  *
@@ -433,7 +428,6 @@ var bosco;
     })();
     bosco.Properties = Properties;
 })(bosco || (bosco = {}));
-//# sourceMappingURL=Properties.js.map
 /**
  * Bosco.ts
  *
@@ -454,8 +448,6 @@ var bosco;
         ScaleType[ScaleType["FIXED"] = 1] = "FIXED"; // scale fixed size to fit the screen
     })(bosco.ScaleType || (bosco.ScaleType = {}));
     var ScaleType = bosco.ScaleType;
-    bosco.config;
-    bosco.delta;
     /**
      * Load assets and start
      */
@@ -574,4 +566,4 @@ var bosco;
     })();
     bosco.Game = Game;
 })(bosco || (bosco = {}));
-//# sourceMappingURL=Bosco.js.map
+//# sourceMappingURL=bosco.js.map
