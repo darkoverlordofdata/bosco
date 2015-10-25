@@ -9,7 +9,7 @@
   "scripts": {
     "_vscode_build": "tsc --watch",
     "android": "",
-    "build": "cat web/src/bosco/Input.js LF web/src/bosco/Rnd.js LF web/src/bosco/TrigLUT.js LF web/src/bosco/Utils.js LF web/src/bosco/Properties.js LF web/src/bosco/Bosco.js > build/bosco.js  && cat web/src/bosco/Input.js LF web/src/bosco/Rnd.js LF web/src/bosco/TrigLUT.js LF web/src/bosco/Utils.js LF web/src/bosco/Properties.js LF web/src/bosco/Bosco.js | java -jar packages/closure-compiler/lib/vendor/compiler.jar --compilation_level WHITESPACE_ONLY --js_output_file build/bosco.min.js",
+    "build": "cat web/src/bosco/Input.js LF web/src/bosco/Rnd.js LF web/src/bosco/Timer.js LF web/src/bosco/TrigLUT.js LF web/src/bosco/Utils.js LF web/src/bosco/Properties.js LF web/src/bosco/Bosco.js > build/bosco.js  && cat web/src/bosco/Input.js LF web/src/bosco/Rnd.js LF web/src/bosco/Timer.js LF web/src/bosco/TrigLUT.js LF web/src/bosco/Utils.js LF web/src/bosco/Properties.js LF web/src/bosco/Bosco.js | java -jar packages/closure-compiler/lib/vendor/compiler.jar --compilation_level WHITESPACE_ONLY --js_output_file build/bosco.min.js",
     "clean": "rm -rf build/* && mkdir -p build && mkdir -p build/web && mkdir -p build/lib",
     "closure": "npm run transpile && tools/convert && java -jar tools/plovr.jar build config.js",
     "deploy": "cp -rf web/res ./web/frameworks/runtime-src/proj.android-studio/app/assets && cp -rf web/src ./web/frameworks/runtime-src/proj.android-studio/app/assets && cp -f web/main.js ./web/frameworks/runtime-src/proj.android-studio/app/assets && cp -f web/project.json ./web/frameworks/runtime-src/proj.android-studio/app/assets",

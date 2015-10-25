@@ -15,6 +15,7 @@
         "lib/ext/Tween.d.ts",
         "lib/bosco/Input.ts",
         "lib/bosco/Rnd.ts",
+        "lib/bosco/Timer.ts",
         "lib/bosco/TrigLUT.ts",
         "lib/bosco/Utils.ts",
         "lib/bosco/Properties.ts",

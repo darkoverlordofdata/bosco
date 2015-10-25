@@ -137,6 +137,94 @@ var bosco;
 (function (bosco) {
     var utils;
     (function (utils) {
+        var Timer = (function () {
+            function Timer(delay, repeat) {
+                if (repeat === void 0) { repeat = false; }
+                this.execute = function () { };
+                this.delay = delay;
+                this.repeat = repeat;
+                this.acc = 0;
+            }
+            Timer.prototype.update = function (delta) {
+                if (!this.done && !this.stopped) {
+                    this.acc += delta;
+                    if (this.acc >= this.delay) {
+                        this.acc -= this.delay;
+                        if (this.repeat) {
+                            this.reset();
+                        }
+                        else {
+                            this.done = true;
+                        }
+                        this.execute();
+                    }
+                }
+            };
+            Timer.prototype.reset = function () {
+                this.stopped = false;
+                this.done = false;
+                this.acc = 0;
+            };
+            Timer.prototype.isDone = function () {
+                return this.done;
+            };
+            Timer.prototype.isRunning = function () {
+                return !this.done && this.acc < this.delay && !this.stopped;
+            };
+            Timer.prototype.stop = function () {
+                this.stopped = true;
+            };
+            Timer.prototype.setDelay = function (delay) {
+                this.delay = delay;
+            };
+            Timer.prototype.getPercentageRemaining = function () {
+                if (this.done)
+                    return 100;
+                else if (this.stopped)
+                    return 0;
+                else
+                    return 1 - (this.delay - this.acc) / this.delay;
+            };
+            Timer.prototype.getDelay = function () {
+                return this.delay;
+            };
+            return Timer;
+        })();
+        utils.Timer = Timer;
+    })(utils = bosco.utils || (bosco.utils = {}));
+})(bosco || (bosco = {}));
+/**
+ * Timer.ts from Artemis: Copyright 2011, 2013 GAMADU.COM. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without modification, are
+ permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this list of
+ conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice, this list
+ of conditions and the following disclaimer in the documentation and/or other materials
+ provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY GAMADU.COM ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GAMADU.COM OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those of the
+ authors and should not be interpreted as representing official policies, either expressed
+ or implied, of GAMADU.COM.
+ */
+//# sourceMappingURL=Timer.js.map
+var bosco;
+(function (bosco) {
+    var utils;
+    (function (utils) {
         // Thanks to Riven
         // From: http://riven8192.blogspot.com/2009/08/fastmath-sincos-lookup-tables.html
         var TrigLUT = (function () {
@@ -196,12 +284,20 @@ var bosco;
     }
     bosco.isMobile = isMobile;
     /**
-     * Builds a composited sprite
+     * Make 'n' Bake:  a composite sprite
      *
-     * @param name  resource name
-     * @returns {PIXI.Sprite}
+     * @param name
+     * @param bake
+     * @returns {Sprite}
      */
-    function prefab(name) {
+    function prefab(name, bake) {
+        if (bake === void 0) { bake = true; }
+        var s = _prefab(name);
+        s.cacheAsBitmap = bake;
+        return s;
+    }
+    bosco.prefab = prefab;
+    function _prefab(name) {
         var config = bosco.config.resources[name];
         if (Array.isArray(config)) {
             var container = new Sprite();
@@ -234,7 +330,6 @@ var bosco;
             return sprite;
         }
     }
-    bosco.prefab = prefab;
 })(bosco || (bosco = {}));
 //# sourceMappingURL=Utils.js.map
 /**
@@ -360,11 +455,12 @@ var bosco;
     })(bosco.ScaleType || (bosco.ScaleType = {}));
     var ScaleType = bosco.ScaleType;
     bosco.config;
+    bosco.delta;
     /**
      * Load assets and start
      */
     function start(config) {
-        if (config.properties) {
+        if (bosco.Properties && config.properties) {
             bosco.Properties.init(config.namespace, config.properties);
         }
         for (var asset in config.assets) {
@@ -430,7 +526,7 @@ var bosco;
                     stats.begin();
                     temp = previousTime || time;
                     previousTime = time;
-                    var delta = (time - temp) * 0.001;
+                    var delta = bosco.delta = (time - temp) * 0.001;
                     for (var i = 0, l = controllers.length; i < l; i++) {
                         controllers[i].update(delta);
                     }
@@ -449,7 +545,7 @@ var bosco;
                 this.update = function (time) {
                     temp = previousTime || time;
                     previousTime = time;
-                    var delta = (time - temp) * 0.001;
+                    var delta = bosco.delta = (time - temp) * 0.001;
                     for (var i = 0, l = controllers.length; i < l; i++) {
                         controllers[i].update(delta);
                     }

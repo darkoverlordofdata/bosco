@@ -2,6 +2,7 @@
   "files": [
     "web/src/bosco/Input.js",
     "web/src/bosco/Rnd.js",
+    "web/src/bosco/Timer.js",
     "web/src/bosco/TrigLUT.js",
     "web/src/bosco/Utils.js",
     "web/src/bosco/Properties.js",

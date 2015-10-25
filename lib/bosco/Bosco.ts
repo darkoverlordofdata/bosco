@@ -28,6 +28,7 @@ module bosco {
   }
 
   export var config;
+  export var delta:number;
 
   /**
    * Load assets and start
@@ -100,7 +101,7 @@ module bosco {
           stats.begin();
           temp = previousTime || time;
           previousTime = time;
-          var delta = (time - temp) * 0.001;
+          var delta = bosco.delta = (time - temp) * 0.001;
           for (var i=0, l=controllers.length; i<l; i++) {
             controllers[i].update(delta);
           }
@@ -120,7 +121,7 @@ module bosco {
         this.update = (time:number) => {
           temp = previousTime || time;
           previousTime = time;
-          var delta = (time - temp) * 0.001;
+          var delta = bosco.delta = (time - temp) * 0.001;
           for (var i=0, l=controllers.length; i<l; i++) {
             controllers[i].update(delta);
           }
