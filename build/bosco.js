@@ -20,24 +20,8 @@ var bosco;
                 };
                 this.onTouchStart = function (event) {
                     event = event.targetTouches ? event.targetTouches[0] : event;
-                    if (_this.isFullScreen) {
-                        try {
-                            if (document.documentElement['requestFullscreen']) {
-                                document.documentElement['requestFullscreen']();
-                            }
-                            else if (document.documentElement['mozRequestFullScreen']) {
-                                document.documentElement['mozRequestFullScreen']();
-                            }
-                            else if (document.documentElement['webkitRequestFullscreen']) {
-                                document.documentElement['webkitRequestFullscreen']();
-                            }
-                            else if (document.documentElement['msRequestFullscreen']) {
-                                document.documentElement['msRequestFullscreen']();
-                            }
-                        }
-                        catch (e) { }
-                        _this.isFullScreen = false;
-                    }
+                    if (_this.isFullScreen === undefined)
+                        _this.checkFullScreen();
                     _this.mouseDown = true;
                     _this.mouseButtonDown = true;
                     _this.mousePosition.x = parseInt(event.clientX);
@@ -46,6 +30,7 @@ var bosco;
                 };
                 this.onTouchMove = function (event) {
                     event = event.targetTouches ? event.targetTouches[0] : event;
+                    console.log('move', event.clientX, event.clientY);
                     _this.mousePosition.x = parseInt(event.clientX);
                     _this.mousePosition.y = parseInt(event.clientY);
                 };
@@ -61,12 +46,6 @@ var bosco;
                 document.addEventListener('mouseup', this.onTouchEnd, true);
                 window.addEventListener('keydown', this.onKeyDown, true);
                 window.addEventListener('keyup', this.onKeyUp, true);
-                if (bosco.config.fullScreen === undefined) {
-                    this.isFullScreen = false;
-                }
-                else {
-                    this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
-                }
             }
             Object.defineProperty(Input, "mousePosition", {
                 get: function () {
@@ -93,6 +72,33 @@ var bosco;
             Input.update = function () {
                 Input._input.mouseDown = false;
                 Input._input.states = {};
+            };
+            Input.prototype.checkFullScreen = function () {
+                if (this.isFullScreen === undefined) {
+                    if (bosco.config.fullScreen === undefined) {
+                        this.isFullScreen = false;
+                    }
+                    else {
+                        this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
+                    }
+                }
+                if (this.isFullScreen) {
+                    try {
+                        if (document.documentElement['requestFullscreen']) {
+                            document.documentElement['requestFullscreen']();
+                        }
+                        else if (document.documentElement['mozRequestFullScreen']) {
+                            document.documentElement['mozRequestFullScreen']();
+                        }
+                        else if (document.documentElement['webkitRequestFullscreen']) {
+                            document.documentElement['webkitRequestFullscreen']();
+                        }
+                        else if (document.documentElement['msRequestFullscreen']) {
+                            document.documentElement['msRequestFullscreen']();
+                        }
+                    }
+                    catch (e) { }
+                }
             };
             Input._input = new Input();
             return Input;

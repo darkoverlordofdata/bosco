@@ -55,13 +55,6 @@ module bosco.utils {
       window.addEventListener('keydown', this.onKeyDown, true);
       window.addEventListener('keyup', this.onKeyUp, true);
 
-      if (bosco.config.fullScreen === undefined) {
-        this.isFullScreen = false;
-      } else {
-        this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
-      }
-
-
     }
 
     private onKeyUp = (event) => {
@@ -74,6 +67,35 @@ module bosco.utils {
 
     private onTouchStart = (event) => {
       event = event.targetTouches ? event.targetTouches[0] : event;
+      if (this.isFullScreen === undefined) this.checkFullScreen();
+
+      this.mouseDown = true;
+      this.mouseButtonDown = true;
+      this.mousePosition.x = parseInt(event.clientX);
+      this.mousePosition.y = parseInt(event.clientY);
+      return true;
+    };
+
+    private onTouchMove = (event) => {
+      event = event.targetTouches ? event.targetTouches[0] : event;
+      console.log('move', event.clientX, event.clientY);
+      this.mousePosition.x = parseInt(event.clientX);
+      this.mousePosition.y = parseInt(event.clientY);
+    };
+
+    private onTouchEnd = (event) => {
+      this.mouseDown = false;
+      this.mouseButtonDown = false;
+    };
+
+    private checkFullScreen() {
+      if (this.isFullScreen === undefined) {
+        if (bosco.config.fullScreen === undefined) {
+          this.isFullScreen = false;
+        } else {
+          this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
+        }
+      }
 
       if (this.isFullScreen) {
         try {
@@ -87,27 +109,8 @@ module bosco.utils {
             document.documentElement['msRequestFullscreen']();
           }
         } catch (e) {}
-        this.isFullScreen = false;
-
       }
-
-      this.mouseDown = true;
-      this.mouseButtonDown = true;
-      this.mousePosition.x = parseInt(event.clientX);
-      this.mousePosition.y = parseInt(event.clientY);
-      return true;
-    };
-
-    private onTouchMove = (event) => {
-      event = event.targetTouches ? event.targetTouches[0] : event;
-      this.mousePosition.x = parseInt(event.clientX);
-      this.mousePosition.y = parseInt(event.clientY);
-    };
-
-    private onTouchEnd = (event) => {
-      this.mouseDown = false;
-      this.mouseButtonDown = false;
-    };
+    }
 
   }
 }

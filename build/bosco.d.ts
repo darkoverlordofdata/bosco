@@ -27,6 +27,7 @@ declare module bosco.utils {
         private onTouchStart;
         private onTouchMove;
         private onTouchEnd;
+        private checkFullScreen();
     }
 }
 declare module bosco.utils {
