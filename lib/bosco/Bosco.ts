@@ -29,6 +29,7 @@ module bosco {
 
   export var config;
   export var delta:number;
+  export var fps:number=0;
 
   /**
    * Load assets and start
@@ -60,6 +61,8 @@ module bosco {
     resources;
     controllers;
     previousTime:number;
+    private totalFrames:number=0;
+    private elapsedTime:number=0;
 
     /**
      * Create the game instance
@@ -122,6 +125,15 @@ module bosco {
       var temp = this.previousTime || time;
       this.previousTime = time;
       var delta = bosco.delta = (time - temp) * 0.001;
+
+      this.totalFrames++;
+      this.elapsedTime += delta;
+      if (this.elapsedTime > 1) {
+        bosco.fps = this.totalFrames;
+        this.totalFrames = 0;
+        this.elapsedTime = 0;
+      }
+
       var controllers = this.controllers;
       for (var i=0, l=controllers.length; i<l; i++) {
         controllers[i].update(delta);

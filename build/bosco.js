@@ -30,7 +30,6 @@ var bosco;
                 };
                 this.onTouchMove = function (event) {
                     event = event.targetTouches ? event.targetTouches[0] : event;
-                    console.log('move', event.clientX, event.clientY);
                     _this.mousePosition.x = parseInt(event.clientX);
                     _this.mousePosition.y = parseInt(event.clientY);
                 };
@@ -461,6 +460,7 @@ var bosco;
         ScaleType[ScaleType["FIXED"] = 1] = "FIXED"; // scale fixed size to fit the screen
     })(bosco.ScaleType || (bosco.ScaleType = {}));
     var ScaleType = bosco.ScaleType;
+    bosco.fps = 0;
     /**
      * Load assets and start
      */
@@ -488,6 +488,8 @@ var bosco;
          */
         function Game(config, resources) {
             var _this = this;
+            this.totalFrames = 0;
+            this.elapsedTime = 0;
             /**
              * Game Loop
              * @param time
@@ -499,6 +501,13 @@ var bosco;
                 var temp = _this.previousTime || time;
                 _this.previousTime = time;
                 var delta = bosco.delta = (time - temp) * 0.001;
+                _this.totalFrames++;
+                _this.elapsedTime += delta;
+                if (_this.elapsedTime > 1) {
+                    bosco.fps = _this.totalFrames;
+                    _this.totalFrames = 0;
+                    _this.elapsedTime = 0;
+                }
                 var controllers = _this.controllers;
                 for (var i = 0, l = controllers.length; i < l; i++) {
                     controllers[i].update(delta);

@@ -78,7 +78,6 @@ module bosco.utils {
 
     private onTouchMove = (event) => {
       event = event.targetTouches ? event.targetTouches[0] : event;
-      console.log('move', event.clientX, event.clientY);
       this.mousePosition.x = parseInt(event.clientX);
       this.mousePosition.y = parseInt(event.clientY);
     };

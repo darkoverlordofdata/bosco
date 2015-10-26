@@ -133,6 +133,7 @@ declare module bosco {
     }
     var config: any;
     var delta: number;
+    var fps: number;
     /**
      * Load assets and start
      */
@@ -147,6 +148,8 @@ declare module bosco {
         resources: any;
         controllers: any;
         previousTime: number;
+        private totalFrames;
+        private elapsedTime;
         /**
          * Create the game instance
          * @param resources
