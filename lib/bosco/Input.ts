@@ -39,6 +39,7 @@ module bosco.utils {
     public mouseDown:boolean = false;
     public mouseButtonDown:boolean = false;
     public mousePosition = {x:0, y:0};
+    public isFullScreen:boolean;
 
     isDown = (keyCode) => this.states[keyCode];
     isUp = (keyCode) => !this.states[keyCode];
@@ -54,6 +55,13 @@ module bosco.utils {
       window.addEventListener('keydown', this.onKeyDown, true);
       window.addEventListener('keyup', this.onKeyUp, true);
 
+      if (bosco.config.fullScreen === undefined) {
+        this.isFullScreen = false;
+      } else {
+        this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
+      }
+
+
     }
 
     private onKeyUp = (event) => {
@@ -67,7 +75,7 @@ module bosco.utils {
     private onTouchStart = (event) => {
       event = event.targetTouches ? event.targetTouches[0] : event;
 
-      if (bosco.isMobile() || bosco.config.fullScreen) {
+      if (this.isFullScreen) {
         try {
           if (document.documentElement['requestFullscreen']) {
             document.documentElement['requestFullscreen']();
@@ -79,6 +87,7 @@ module bosco.utils {
             document.documentElement['msRequestFullscreen']();
           }
         } catch (e) {}
+        this.isFullScreen = false;
 
       }
 

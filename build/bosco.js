@@ -20,7 +20,7 @@ var bosco;
                 };
                 this.onTouchStart = function (event) {
                     event = event.targetTouches ? event.targetTouches[0] : event;
-                    if (bosco.isMobile() || bosco.config.fullScreen) {
+                    if (_this.isFullScreen) {
                         try {
                             if (document.documentElement['requestFullscreen']) {
                                 document.documentElement['requestFullscreen']();
@@ -36,6 +36,7 @@ var bosco;
                             }
                         }
                         catch (e) { }
+                        _this.isFullScreen = false;
                     }
                     _this.mouseDown = true;
                     _this.mouseButtonDown = true;
@@ -60,6 +61,12 @@ var bosco;
                 document.addEventListener('mouseup', this.onTouchEnd, true);
                 window.addEventListener('keydown', this.onKeyDown, true);
                 window.addEventListener('keyup', this.onKeyUp, true);
+                if (bosco.config.fullScreen === undefined) {
+                    this.isFullScreen = false;
+                }
+                else {
+                    this.isFullScreen = bosco.isMobile() || bosco.config.fullScreen;
+                }
             }
             Object.defineProperty(Input, "mousePosition", {
                 get: function () {
@@ -479,7 +486,24 @@ var bosco;
              * Game Loop
              * @param time
              */
-            this.update = function (time) { };
+            this.update = function (time) {
+                var stats = _this.stats;
+                if (stats)
+                    stats.begin();
+                var temp = _this.previousTime || time;
+                _this.previousTime = time;
+                var delta = bosco.delta = (time - temp) * 0.001;
+                var controllers = _this.controllers;
+                for (var i = 0, l = controllers.length; i < l; i++) {
+                    controllers[i].update(delta);
+                }
+                _this.renderer.render(_this.stage);
+                Input.update();
+                TWEEN.update();
+                requestAnimationFrame(_this.update);
+                if (stats)
+                    stats.end();
+            };
             /**
              * Resize window
              */
@@ -489,11 +513,10 @@ var bosco;
                 _this.stage.scale.x = _this.stage.scale.y = ratio;
                 _this.renderer.resize(Math.ceil(_this.config.width * ratio), Math.ceil(_this.config.height * ratio));
             };
-            var controllers = [];
-            var temp;
-            var previousTime;
             this.config = bosco.config = config;
             this.resources = resources;
+            this.previousTime = 0;
+            var controllers = this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
             renderer.view.style.position = 'absolute';
             renderer.view.style.top = '0px';
@@ -510,42 +533,6 @@ var bosco;
                 stats.domElement.style.left = '0px';
                 stats.domElement.style.top = '0px';
                 document.body.appendChild(stats.domElement);
-                /**
-                 *
-                 * @param time
-                 */
-                this.update = function (time) {
-                    stats.begin();
-                    temp = previousTime || time;
-                    previousTime = time;
-                    var delta = bosco.delta = (time - temp) * 0.001;
-                    for (var i = 0, l = controllers.length; i < l; i++) {
-                        controllers[i].update(delta);
-                    }
-                    renderer.render(stage);
-                    stats.end();
-                    requestAnimationFrame(_this.update);
-                    Input.update();
-                    TWEEN.update();
-                };
-            }
-            else {
-                /**
-                 *
-                 * @param time
-                 */
-                this.update = function (time) {
-                    temp = previousTime || time;
-                    previousTime = time;
-                    var delta = bosco.delta = (time - temp) * 0.001;
-                    for (var i = 0, l = controllers.length; i < l; i++) {
-                        controllers[i].update(delta);
-                    }
-                    renderer.render(stage);
-                    requestAnimationFrame(_this.update);
-                    Input.update();
-                    TWEEN.update();
-                };
             }
             window.addEventListener('resize', this.resize, true);
             window.onorientationchange = this.resize;

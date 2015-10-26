@@ -18,6 +18,7 @@ declare module bosco.utils {
             x: number;
             y: number;
         };
+        isFullScreen: boolean;
         isDown: (keyCode: any) => any;
         isUp: (keyCode: any) => boolean;
         constructor();
@@ -143,6 +144,8 @@ declare module bosco {
         stats: any;
         config: any;
         resources: any;
+        controllers: any;
+        previousTime: number;
         /**
          * Create the game instance
          * @param resources

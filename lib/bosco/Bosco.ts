@@ -58,6 +58,8 @@ module bosco {
     stats;
     config;
     resources;
+    controllers;
+    previousTime:number;
 
     /**
      * Create the game instance
@@ -65,14 +67,12 @@ module bosco {
      */
     constructor(config, resources) {
 
-      var controllers = [];
-      var temp:number;
-      var previousTime:number;
-
       this.config = bosco.config = config;
       this.resources = resources;
-
+      this.previousTime = 0;
+      var controllers = this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+
       renderer.view.style.position = 'absolute';
       renderer.view.style.top = '0px';
       renderer.view.style.left = '0px';
@@ -92,44 +92,6 @@ module bosco {
         stats.domElement.style.left = '0px';
         stats.domElement.style.top = '0px';
         document.body.appendChild(stats.domElement);
-
-        /**
-         *
-         * @param time
-         */
-        this.update = (time:number) => {
-          stats.begin();
-          temp = previousTime || time;
-          previousTime = time;
-          var delta = bosco.delta = (time - temp) * 0.001;
-          for (var i=0, l=controllers.length; i<l; i++) {
-            controllers[i].update(delta);
-          }
-          renderer.render(stage);
-          stats.end();
-          requestAnimationFrame(this.update);
-          Input.update();
-          TWEEN.update();
-        };
-
-      } else {
-
-        /**
-         *
-         * @param time
-         */
-        this.update = (time:number) => {
-          temp = previousTime || time;
-          previousTime = time;
-          var delta = bosco.delta = (time - temp) * 0.001;
-          for (var i=0, l=controllers.length; i<l; i++) {
-            controllers[i].update(delta);
-          }
-          renderer.render(stage);
-          requestAnimationFrame(this.update);
-          Input.update();
-          TWEEN.update();
-        };
       }
 
       window.addEventListener('resize', this.resize, true);
@@ -153,7 +115,25 @@ module bosco {
      * Game Loop
      * @param time
      */
-    update = (time:number) => {};
+    update = (time:number) => {
+      var stats = this.stats;
+      if (stats) stats.begin();
+
+      var temp = this.previousTime || time;
+      this.previousTime = time;
+      var delta = bosco.delta = (time - temp) * 0.001;
+      var controllers = this.controllers;
+      for (var i=0, l=controllers.length; i<l; i++) {
+        controllers[i].update(delta);
+      }
+      this.renderer.render(this.stage);
+      Input.update();
+      TWEEN.update();
+      requestAnimationFrame(this.update);
+
+      if (stats) stats.end();
+    };
+
 
     /**
      * Resize window
