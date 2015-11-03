@@ -30,6 +30,7 @@ module bosco {
   export var config;
   export var delta:number;
   export var fps:number=0;
+  var _prefabs = {};
 
   /**
    * Load assets and start
@@ -42,13 +43,88 @@ module bosco {
     for (var asset in config.assets) {
       PIXI.loader.add(asset, config.assets[asset]);
     }
-    PIXI.loader.load((loader, resources) => new Game(config, resources));
+    PIXI.loader.load((loader, resources) => {
+      new Game(config, resources);
+    });
   }
 
   class DummyStats {
     begin() {}
     end() {}
   }
+
+  /**
+   * Bake a texture
+   * @param name
+   */
+  function buildComposite(name, level=0): Sprite {
+
+    var config = bosco.config.resources[name];
+
+    if (Array.isArray(config)) {
+      var container = new Sprite();
+      for (var i = 0, l = config.length; i < l; i++) {
+        container.addChild(buildComposite(config[i], level+1));
+      }
+      return container;
+    } else {
+      var sprite = new Sprite(Texture.fromFrame(config.path));
+      for (var k in config) {
+        switch (k) {
+          case 'anchor':
+            sprite.anchor.set(config.anchor.x, config.anchor.y);
+            break;
+          case 'scale':
+            if (level>0) sprite.scale.set(config.scale.x, config.scale.y);
+            break;
+          case 'position':
+            if (level>0) sprite.position.set(config.position.x, config.position.y);
+            break;
+          case 'rotation':
+            if (level>0) sprite.rotation = config.rotation.z;
+            break;
+          case 'tint':
+            sprite.tint = config.tint;
+            break;
+        }
+      }
+      return sprite;
+    }
+
+  }
+
+  /**
+   * prefab
+   *
+   * Make a sprite from a prefabricated texture
+   * and then configure it.
+   *
+   * @param name
+   * @param parent
+   * @returns {PIXI.Sprite}
+   */
+  export function prefab(name, parent=viewContainer): Sprite {
+    var sprite = new Sprite(_prefabs[name]);
+    var config = bosco.config.resources[name];
+    for (var k in config) {
+      switch (k) {
+        case 'anchor':
+          sprite.anchor.set(config.anchor.x, config.anchor.y);
+          break;
+        case 'scale':
+          sprite.scale.set(config.scale.x, config.scale.y);
+          break;
+        case 'position':
+          sprite.position.set(config.position.x, config.position.y);
+          break;
+        case 'rotation':
+          sprite.rotation = config.rotation.z;
+          break;
+      }
+    }
+    return sprite;
+  }
+
   export class Game {
 
 
@@ -75,6 +151,11 @@ module bosco {
       this.previousTime = 0;
       var controllers = this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+
+      for (var name in config.resources) {
+        var s:Sprite = buildComposite(name);
+        _prefabs[name] = s.generateTexture(renderer)
+      }
 
       renderer.view.style.position = 'absolute';
       renderer.view.style.top = '0px';

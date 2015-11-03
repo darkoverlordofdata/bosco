@@ -285,59 +285,10 @@ var bosco;
  */
 var bosco;
 (function (bosco) {
-    var Sprite = PIXI.Sprite;
-    var Texture = PIXI.Texture;
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
     bosco.isMobile = isMobile;
-    /**
-     * Make 'n' Bake:  a composite sprite
-     *
-     * @param name
-     * @param bake
-     * @returns {Sprite}
-     */
-    function prefab(name, bake) {
-        if (bake === void 0) { bake = true; }
-        var s = _prefab(name);
-        s.cacheAsBitmap = bake;
-        return s;
-    }
-    bosco.prefab = prefab;
-    function _prefab(name) {
-        var config = bosco.config.resources[name];
-        if (Array.isArray(config)) {
-            var container = new Sprite();
-            for (var i = 0, l = config.length; i < l; i++) {
-                container.addChild(prefab(config[i]));
-            }
-            return container;
-        }
-        else {
-            var sprite = new Sprite(Texture.fromFrame(config.path));
-            for (var k in config) {
-                switch (k) {
-                    case 'anchor':
-                        sprite.anchor.set(config.anchor.x, config.anchor.y);
-                        break;
-                    case 'scale':
-                        sprite.scale.set(config.scale.x, config.scale.y);
-                        break;
-                    case 'position':
-                        sprite.position.set(config.position.x, config.position.y);
-                        break;
-                    case 'rotation':
-                        sprite.rotation = config.rotation.z;
-                        break;
-                    case 'tint':
-                        sprite.tint = config.tint;
-                        break;
-                }
-            }
-            return sprite;
-        }
-    }
 })(bosco || (bosco = {}));
 /**
  * Properties.ts
@@ -453,6 +404,8 @@ var bosco;
  */
 var bosco;
 (function (bosco) {
+    var Sprite = PIXI.Sprite;
+    var Texture = PIXI.Texture;
     var Container = PIXI.Container;
     var Input = bosco.utils.Input;
     (function (ScaleType) {
@@ -461,6 +414,7 @@ var bosco;
     })(bosco.ScaleType || (bosco.ScaleType = {}));
     var ScaleType = bosco.ScaleType;
     bosco.fps = 0;
+    var _prefabs = {};
     /**
      * Load assets and start
      */
@@ -471,7 +425,9 @@ var bosco;
         for (var asset in config.assets) {
             PIXI.loader.add(asset, config.assets[asset]);
         }
-        PIXI.loader.load(function (loader, resources) { return new Game(config, resources); });
+        PIXI.loader.load(function (loader, resources) {
+            new Game(config, resources);
+        });
     }
     bosco.start = start;
     var DummyStats = (function () {
@@ -481,6 +437,80 @@ var bosco;
         DummyStats.prototype.end = function () { };
         return DummyStats;
     })();
+    /**
+     * Bake a texture
+     * @param name
+     */
+    function buildComposite(name, level) {
+        if (level === void 0) { level = 0; }
+        var config = bosco.config.resources[name];
+        if (Array.isArray(config)) {
+            var container = new Sprite();
+            for (var i = 0, l = config.length; i < l; i++) {
+                container.addChild(buildComposite(config[i], level + 1));
+            }
+            return container;
+        }
+        else {
+            var sprite = new Sprite(Texture.fromFrame(config.path));
+            for (var k in config) {
+                switch (k) {
+                    case 'anchor':
+                        sprite.anchor.set(config.anchor.x, config.anchor.y);
+                        break;
+                    case 'scale':
+                        if (level > 0)
+                            sprite.scale.set(config.scale.x, config.scale.y);
+                        break;
+                    case 'position':
+                        if (level > 0)
+                            sprite.position.set(config.position.x, config.position.y);
+                        break;
+                    case 'rotation':
+                        if (level > 0)
+                            sprite.rotation = config.rotation.z;
+                        break;
+                    case 'tint':
+                        sprite.tint = config.tint;
+                        break;
+                }
+            }
+            return sprite;
+        }
+    }
+    /**
+     * prefab
+     *
+     * Make a sprite from a prefabricated texture
+     * and then configure it.
+     *
+     * @param name
+     * @param parent
+     * @returns {PIXI.Sprite}
+     */
+    function prefab(name, parent) {
+        if (parent === void 0) { parent = viewContainer; }
+        var sprite = new Sprite(_prefabs[name]);
+        var config = bosco.config.resources[name];
+        for (var k in config) {
+            switch (k) {
+                case 'anchor':
+                    sprite.anchor.set(config.anchor.x, config.anchor.y);
+                    break;
+                case 'scale':
+                    sprite.scale.set(config.scale.x, config.scale.y);
+                    break;
+                case 'position':
+                    sprite.position.set(config.position.x, config.position.y);
+                    break;
+                case 'rotation':
+                    sprite.rotation = config.rotation.z;
+                    break;
+            }
+        }
+        return sprite;
+    }
+    bosco.prefab = prefab;
     var Game = (function () {
         /**
          * Create the game instance
@@ -533,6 +563,10 @@ var bosco;
             this.previousTime = 0;
             var controllers = this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+            for (var name in config.resources) {
+                var s = buildComposite(name);
+                _prefabs[name] = s.generateTexture(renderer);
+            }
             renderer.view.style.position = 'absolute';
             renderer.view.style.top = '0px';
             renderer.view.style.left = '0px';
