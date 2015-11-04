@@ -441,9 +441,8 @@ var bosco;
      * Bake a texture
      * @param name
      */
-    function buildComposite(name, level) {
+    function buildComposite(config, level) {
         if (level === void 0) { level = 0; }
-        var config = bosco.config.resources[name];
         if (Array.isArray(config)) {
             var container = new Sprite();
             for (var i = 0, l = config.length; i < l; i++) {
@@ -508,6 +507,8 @@ var bosco;
                     break;
             }
         }
+        if (parent)
+            parent.addChild(sprite);
         return sprite;
     }
     bosco.prefab = prefab;
@@ -564,7 +565,7 @@ var bosco;
             var controllers = this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
             for (var name in config.resources) {
-                var s = buildComposite(name);
+                var s = buildComposite(config.resources[name]);
                 _prefabs[name] = s.generateTexture(renderer);
             }
             renderer.view.style.position = 'absolute';

@@ -57,9 +57,7 @@ module bosco {
    * Bake a texture
    * @param name
    */
-  function buildComposite(name, level=0): Sprite {
-
-    var config = bosco.config.resources[name];
+  function buildComposite(config, level=0): Sprite {
 
     if (Array.isArray(config)) {
       var container = new Sprite();
@@ -122,6 +120,7 @@ module bosco {
           break;
       }
     }
+    if (parent) parent.addChild(sprite);
     return sprite;
   }
 
@@ -153,7 +152,7 @@ module bosco {
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
 
       for (var name in config.resources) {
-        var s:Sprite = buildComposite(name);
+        var s:Sprite = buildComposite(config.resources[name]);
         _prefabs[name] = s.generateTexture(renderer)
       }
 
