@@ -8,21 +8,25 @@ module example {
   import TriggerOnEvent = entitas.TriggerOnEvent;
   import IReactiveSystem = entitas.IReactiveSystem;
   import ISetPool = entitas.ISetPool;
-0
-  export class DestroySystem implements IReactiveSystem, ISetPool {
+
+  export class ReachedFinishSystem implements IReactiveSystem, ISetPool {
     protected pool:Pool;
 
     public get trigger():TriggerOnEvent {
-      return Matcher.Destroy.onEntityAdded();
+      return Matcher.Position.onEntityAdded();
     }
 
     /**
-     * Execute when a Destroy component is added
+     * Check if anyone crossed the finish line
      * @param entities
      */
     public execute(entities:Array<Entity>) {
+      var finishLinePosY = this.pool.finishLineEntity.position.y;
       for (var i=0, l=entities.length; i<l; i++) {
-        this.pool.destroyEntity(entities[i]);
+        var e = entities[i];
+        if (e.position.y > finishLinePosY) {
+          e.isDestroy = true;
+        }
       }
     }
     

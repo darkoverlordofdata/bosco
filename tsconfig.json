@@ -10,15 +10,16 @@
         "outDir": "web/src/bosco"
     },
     "files": [
-        "lib/ext/pixi.js.d.ts",
-        "lib/ext/localStorageDB.d.ts",
-        "lib/ext/Tween.d.ts",
+        "example/ext/pixi.js.d.ts",
+        "example/ext/Tween.d.ts",
+        "example/ext/localStorageDB.d.ts",
+        "example/ext/example.d.ts",
+        "lib/bosco/Properties.ts",
         "lib/bosco/Input.ts",
         "lib/bosco/Rnd.ts",
         "lib/bosco/Timer.ts",
         "lib/bosco/TrigLUT.ts",
         "lib/bosco/Utils.ts",
-        "lib/bosco/Properties.ts",
         "lib/bosco/Bosco.ts"
     ]
 }

@@ -1,17 +1,11 @@
-/**
- *
- *     __  __         ___                            ___  ___
- *    / /_/ /  ___   / _ \___ _    _____ ____  ___  / _/ / _ )___  ___ _______
- *   / __/ _ \/ -_) / ___/ _ \ |/|/ / -_) __/ / _ \/ _/ / _  / _ \(_-</ __/ _ \
- *   \__/_//_/\__/ /_/   \___/__,__/\__/_/    \___/_/  /____/\___/___/\__/\___/
- *
- *
- *
- */
 bosco.start({
-    "namespace": "matchone",
-    "width": 640,
-    "height": 640,
+    "namespace": "example",
+    "controllers": [
+        "GameController"
+    ],
+    "width": window.innerWidth,
+    "height": window.innerHeight,
+    "fullScreen": false,
     "scale": false,
     "scaleType": "FILL",
     "stats": true,
@@ -20,25 +14,9 @@ bosco.start({
         "antialiasing": false,
         "transparent": false,
         "resolution": window.devicePixelRatio,
-        "autoResize": true, "backgroundColor": "0x3c3c3c"
+        "autoResize": true,
+        "backgroundColor": "0x3c3c3c"
     },
-    "assets": {
-        "images": (window.devicePixelRatio >= 2) ? "res/images@2x.json" : "res/images.json"
-    },
-    "resources": {
-        "Blocker" : {"path": "Blocker.png"},
-        "Piece0"  : {"path": "Piece0.png"},
-        "Piece1"  : {"path": "Piece1.png"},
-        "Piece2"  : {"path": "Piece2.png"},
-        "Piece3"  : {"path": "Piece3.png"},
-        "Piece4"  : {"path": "Piece4.png"},
-        "Piece5"  : {"path": "Piece5.png"}
-    },
-    "controllers": [
-        "GameController",
-        "InputController",
-        "ScoreLabelController"
-    ],
     "properties": {
         "skip": "false",
         "leaderboard": "off",
@@ -46,6 +24,66 @@ bosco.start({
         "userId": "",
         "playMusic": "true",
         "playSfx": "true"
+    },
+    "assets": {
+        finish_png    : 'res/Finish Line.png',
+        opponent_png  : 'res/Opponent.png',
+        player_png    : 'res/Player.png',
+        square_png    : 'res/Square.png'
+    },
+    "resources": {
+
+        'Finish Line': [
+            {
+                path: 'res/Square.png',
+                scale: {
+                    x: 5,
+                    y: .33,
+                    z: 1
+                },
+                tint: 0xc0c0c0
+            }
+            ,
+            {
+                path: 'res/Finish Line.png',
+                scale: {
+                    x: .4*.33,
+                    y: .6*.33,
+                    z: 1
+                },
+                position: {
+                    x: 500,
+                    y: 0
+                }
+            }
+        ],
+        'Opponent': {
+            path: 'res/Opponent.png',
+            scale: {
+                x:.5,
+                y:.5,
+                z:.5
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 90*Math.PI/180
+            }
+
+        },
+        'Player': {
+            path: 'res/Player.png',
+            scale: {
+                x:.5,
+                y:.5,
+                z:.5
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 90*Math.PI/180
+            }
+
+        }
     }
 });
-

@@ -1,21 +1,3 @@
-/**
- * Properties.ts
- *
- * Persist properties using LocalStorage
- *
- */
-declare module bosco {
-    class Properties {
-        private static db;
-        private static dbname;
-        private static properties;
-        static init(name: any, properties: any): void;
-        static get(prop: any): any;
-        static set: (prop: any, value: any) => void;
-        static setScore(score: any): void;
-        static getLeaderboard(count: any): any;
-    }
-}
 declare module bosco.utils {
     class Input {
         private static _input;
@@ -105,6 +87,24 @@ declare module bosco {
     function isMobile(): boolean;
 }
 /**
+ * Properties.ts
+ *
+ * Persist properties using LocalStorage
+ *
+ */
+declare module bosco {
+    class Properties {
+        private static db;
+        private static dbname;
+        private static properties;
+        static init(name: any, properties: any): void;
+        static get(prop: any): any;
+        static set: (prop: any, value: any) => void;
+        static setScore(score: any): void;
+        static getLeaderboard(count: any): any;
+    }
+}
+/**
  * Bosco.ts
  *
  * Game Shell
@@ -126,18 +126,21 @@ declare module bosco {
     var config: any;
     var delta: number;
     var fps: number;
-    var _prefabs: {};
     /**
      * Load assets and start
      */
     function start(config: any): void;
     /**
+     * prefab
+     *
+     * Make a sprite from a prefabricated texture
+     * and then configure it.
      *
      * @param name
      * @param parent
      * @returns {PIXI.Sprite}
      */
-    function prefab(name: string, parent?: any): Sprite;
+    function prefab(name: any, parent?: any): Sprite;
     class Game {
         stage: Container;
         sprites: Container;

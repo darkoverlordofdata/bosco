@@ -21,6 +21,7 @@ module bosco {
   import Container = PIXI.Container;
   import SystemRenderer = PIXI.SystemRenderer;
   import Input = bosco.utils.Input;
+  import Properties = bosco.Properties;
 
   export enum ScaleType {
     FILL, // fill to fit screen
@@ -30,22 +31,20 @@ module bosco {
   export var config;
   export var delta:number;
   export var fps:number=0;
-  var _prefabs = {};
+  export var _prefabs = {};
 
   /**
    * Load assets and start
    */
   export function start(config) {
-    if (Properties && config.properties) {
+    if (config.properties) {
       Properties.init(config.namespace, config.properties);
     }
 
     for (var asset in config.assets) {
       PIXI.loader.add(asset, config.assets[asset]);
     }
-    PIXI.loader.load((loader, resources) => {
-      new Game(config, resources);
-    });
+    PIXI.loader.load((loader, resources) => new Game(config, resources));
   }
 
   class DummyStats {
@@ -53,33 +52,42 @@ module bosco {
     end() {}
   }
 
-  /**
-   * Bake a texture
-   * @param name
-   */
-  function buildComposite(config, level=0): Sprite {
 
+  /**
+   *
+   * @param name
+   * @param parent
+   * @returns {PIXI.Sprite}
+   */
+  export function prefab(name:string, parent=viewContainer): Sprite {
+
+    var s = _prefab(bosco.config.resources[name]);
+    if (parent) parent.addChild(s);
+    return s;
+  }
+
+  function _prefab(config): Sprite {
     if (Array.isArray(config)) {
       var container = new Sprite();
-      for (var i = 0, l = config.length; i < l; i++) {
-        container.addChild(buildComposite(config[i], level+1));
+      for (var i=0, l=config.length; i<l; i++) {
+        container.addChild(_prefab(config[i]));
       }
       return container;
     } else {
       var sprite = new Sprite(Texture.fromFrame(config.path));
       for (var k in config) {
-        switch (k) {
+        switch(k) {
           case 'anchor':
             sprite.anchor.set(config.anchor.x, config.anchor.y);
             break;
           case 'scale':
-            if (level>0) sprite.scale.set(config.scale.x, config.scale.y);
+            sprite.scale.set(config.scale.x, config.scale.y);
             break;
           case 'position':
-            if (level>0) sprite.position.set(config.position.x, config.position.y);
+            sprite.position.set(config.position.x, config.position.y);
             break;
           case 'rotation':
-            if (level>0) sprite.rotation = config.rotation.z;
+            sprite.rotation = config.rotation.z;
             break;
           case 'tint':
             sprite.tint = config.tint;
@@ -88,42 +96,7 @@ module bosco {
       }
       return sprite;
     }
-
   }
-
-  /**
-   * prefab
-   *
-   * Make a sprite from a prefabricated texture
-   * and then configure it.
-   *
-   * @param name
-   * @param parent
-   * @returns {PIXI.Sprite}
-   */
-  export function prefab(name, parent=viewContainer): Sprite {
-    var sprite = new Sprite(_prefabs[name]);
-    var config = bosco.config.resources[name];
-    for (var k in config) {
-      switch (k) {
-        case 'anchor':
-          sprite.anchor.set(config.anchor.x, config.anchor.y);
-          break;
-        case 'scale':
-          sprite.scale.set(config.scale.x, config.scale.y);
-          break;
-        case 'position':
-          sprite.position.set(config.position.x, config.position.y);
-          break;
-        case 'rotation':
-          sprite.rotation = config.rotation.z;
-          break;
-      }
-    }
-    if (parent) parent.addChild(sprite);
-    return sprite;
-  }
-
   export class Game {
 
 
@@ -150,11 +123,6 @@ module bosco {
       this.previousTime = 0;
       var controllers = this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
-
-      for (var name in config.resources) {
-        var s:Sprite = buildComposite(config.resources[name]);
-        _prefabs[name] = s.generateTexture(renderer)
-      }
 
       renderer.view.style.position = 'absolute';
       renderer.view.style.top = '0px';
@@ -230,6 +198,7 @@ module bosco {
     /**
      * Resize window
      */
+
     resize = () => {
       var ratio = Math.min(window.innerWidth/this.config.width,
         window.innerHeight/this.config.height);

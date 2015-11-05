@@ -1,6 +1,6 @@
-module matchone {
+module example {
 
-  import Pools = matchone.Pools;
+  import Pools = example.Pools;
   import Systems = entitas.Systems;
 
   export class GameController {
@@ -20,23 +20,26 @@ module matchone {
 
     createSystems(pool) {
       return new Systems()
+        // Initialize
+        .add(pool.createSystem(example.CreateFinishLineSystem))
+        .add(pool.createSystem(example.CreatePlayerSystem))
+        .add(pool.createSystem(example.CreateOpponentsSystem))
+
         // Input
-        .add(pool.createSystem(matchone.ProcessInputSystem))
+        .add(pool.createSystem(example.InputSystem))
 
         // Update
-        .add(pool.createSystem(matchone.CreateGameBoardCacheSystem))
-        .add(pool.createSystem(matchone.GameBoardSystem))
-        .add(pool.createSystem(matchone.FallSystem))
-        .add(pool.createSystem(matchone.FillSystem))
-        .add(pool.createSystem(matchone.ScoreSystem))
+        .add(pool.createSystem(example.AccelerateSystem))
+        .add(pool.createSystem(example.MoveSystem))
+        .add(pool.createSystem(example.ReachedFinishSystem))
 
         // Render
-        .add(pool.createSystem(matchone.RemoveViewSystem))
-        .add(pool.createSystem(matchone.AddViewSystem))
-        .add(pool.createSystem(matchone.RenderPositionSystem))
+        .add(pool.createSystem(example.RemoveViewSystem))
+        .add(pool.createSystem(example.AddViewSystem))
+        .add(pool.createSystem(example.RenderPositionSystem))
 
         // Destroy
-        .add(pool.createSystem(matchone.DestroySystem));
+        .add(pool.createSystem(example.DestroySystem));
 
     }
   }

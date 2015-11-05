@@ -1,0 +1,51 @@
+{
+  "namespace": "example",
+  "src": "lib/src",
+  "output": {
+    "javascript": "web/src/example/generatedExtensions.js",
+    "typescript": "lib/src/generatedComponents.ts",
+    "declaration": "lib/ext/example.d.ts"
+  },
+  "alloc": {
+    "entities": 200,
+    "components": 128
+  },
+  "components": {
+    "Acceleratable": false,
+    "Accelerating": false,
+    "Destroy": false,
+    "Move": [
+      "speed:number",
+      "maxSpeed:number"
+    ],
+    "Position": [
+      "x:number",
+      "y:number",
+      "z:number"
+    ],
+    "FinishLine": false,
+    "Resource": [
+      "name:string"
+    ],
+    "View": [
+      "sprite:Object"
+    ]
+  },
+  "systems": {
+    "AccelerateSystem": true,
+    "DestroySystem": true,
+    "InputSystem": true,
+    "MoveSystem": true,
+    "ReachedFinishSystem": true,
+    "RenderPositionSystem": true,
+    "AddViewSystem": true,
+    "RemoveViewSystem": true,
+    "CreatePlayerSystem": true,
+    "CreateOpponentsSystem": true,
+    "CreateFinishLineSystem": true
+  },
+  "entities": {
+    "Accelerating": true,
+    "FinishLine": true
+  }
+}

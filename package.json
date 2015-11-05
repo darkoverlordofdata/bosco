@@ -9,6 +9,7 @@
   "scripts": {
     "_vscode_build": "tsc --watch",
     "android": "",
+    "version":"tsc -v && which tsc",
     "build": "tsc -p . --outFile build/bosco.js -d && cat build/bosco.js | java -jar packages/closure-compiler/lib/vendor/compiler.jar --compilation_level WHITESPACE_ONLY --js_output_file build/bosco.min.js",
     "clean": "rm -rf build/* && mkdir -p build && mkdir -p build/web && mkdir -p build/lib",
     "closure": "npm run transpile && tools/convert && java -jar tools/plovr.jar build config.js",

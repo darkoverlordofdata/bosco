@@ -1,3 +1,104 @@
+/**
+ * Properties.ts
+ *
+ * Persist properties using LocalStorage
+ *
+ */
+var bosco;
+(function (bosco) {
+    var Properties = (function () {
+        function Properties() {
+        }
+        Properties.init = function (name, properties) {
+            if (Properties.db !== null)
+                return;
+            /** Initialize the db with the properties */
+            function initializeDb(db) {
+                if (db.isNew()) {
+                    db.createTable("settings", ["name", "value"]);
+                    db.createTable("leaderboard", ["date", "score"]);
+                    for (var key in properties) {
+                        if (properties.hasOwnProperty(key)) {
+                            db.insert("settings", {
+                                name: key,
+                                value: properties[key]
+                            });
+                        }
+                    }
+                    db.commit();
+                }
+            }
+            Properties.dbname = name;
+            Properties.properties = properties;
+            if (window['chrome']) {
+                chromeStorageDB(Properties.dbname, localStorage, function (db) { return initializeDb(Properties.db = db); });
+            }
+            else {
+                initializeDb(Properties.db = new localStorageDB(Properties.dbname));
+            }
+        };
+        /*
+         * Get Game Property from local storage
+         *
+         * @param property name
+         * @return property value
+         */
+        Properties.get = function (prop) {
+            return Properties.db.queryAll("settings", {
+                query: {
+                    name: prop
+                }
+            })[0].value;
+        };
+        Properties.setScore = function (score) {
+            var today = new Date();
+            var mm = (today.getMonth() + 1).toString();
+            if (mm.length === 1)
+                mm = '0' + mm;
+            var dd = today.getDate().toString();
+            if (dd.length === 1)
+                dd = '0' + dd;
+            var yyyy = today.getFullYear().toString();
+            var yyyymmdd = yyyy + mm + dd;
+            if (0 === Properties.db.queryAll('leaderboard', { query: { date: yyyymmdd } }).length) {
+                Properties.db.insert('leaderboard', { date: yyyymmdd, score: score });
+            }
+            else {
+                Properties.db.update('leaderboard', { date: yyyymmdd }, function (row) {
+                    if (score > row.score) {
+                        row.score = score;
+                    }
+                    return row;
+                });
+            }
+            Properties.db.commit();
+        };
+        Properties.getLeaderboard = function (count) {
+            return Properties.db.queryAll('leaderboard', { limit: count, sort: [['score', 'DESC']] });
+        };
+        Properties.db = null;
+        Properties.dbname = "";
+        Properties.properties = null;
+        /*
+         * Set Game Property in local storage
+         *
+         * @param property name
+         * @param property value
+         * @return nothing
+         */
+        Properties.set = function (prop, value) {
+            Properties.db.update("settings", {
+                name: prop
+            }, function (row) {
+                row.value = "" + value;
+                return row;
+            });
+            Properties.db.commit();
+        };
+        return Properties;
+    })();
+    bosco.Properties = Properties;
+})(bosco || (bosco = {}));
 var bosco;
 (function (bosco) {
     var utils;
@@ -291,107 +392,6 @@ var bosco;
     bosco.isMobile = isMobile;
 })(bosco || (bosco = {}));
 /**
- * Properties.ts
- *
- * Persist properties using LocalStorage
- *
- */
-var bosco;
-(function (bosco) {
-    var Properties = (function () {
-        function Properties() {
-        }
-        Properties.init = function (name, properties) {
-            if (Properties.db !== null)
-                return;
-            /** Initialize the db with the properties */
-            function initializeDb(db) {
-                if (db.isNew()) {
-                    db.createTable("settings", ["name", "value"]);
-                    db.createTable("leaderboard", ["date", "score"]);
-                    for (var key in properties) {
-                        if (properties.hasOwnProperty(key)) {
-                            db.insert("settings", {
-                                name: key,
-                                value: properties[key]
-                            });
-                        }
-                    }
-                    db.commit();
-                }
-            }
-            Properties.dbname = name;
-            Properties.properties = properties;
-            if (window['chrome']) {
-                chromeStorageDB(Properties.dbname, localStorage, function (db) { return initializeDb(Properties.db = db); });
-            }
-            else {
-                initializeDb(Properties.db = new localStorageDB(Properties.dbname));
-            }
-        };
-        /*
-         * Get Game Property from local storage
-         *
-         * @param property name
-         * @return property value
-         */
-        Properties.get = function (prop) {
-            return Properties.db.queryAll("settings", {
-                query: {
-                    name: prop
-                }
-            })[0].value;
-        };
-        Properties.setScore = function (score) {
-            var today = new Date();
-            var mm = (today.getMonth() + 1).toString();
-            if (mm.length === 1)
-                mm = '0' + mm;
-            var dd = today.getDate().toString();
-            if (dd.length === 1)
-                dd = '0' + dd;
-            var yyyy = today.getFullYear().toString();
-            var yyyymmdd = yyyy + mm + dd;
-            if (0 === Properties.db.queryAll('leaderboard', { query: { date: yyyymmdd } }).length) {
-                Properties.db.insert('leaderboard', { date: yyyymmdd, score: score });
-            }
-            else {
-                Properties.db.update('leaderboard', { date: yyyymmdd }, function (row) {
-                    if (score > row.score) {
-                        row.score = score;
-                    }
-                    return row;
-                });
-            }
-            Properties.db.commit();
-        };
-        Properties.getLeaderboard = function (count) {
-            return Properties.db.queryAll('leaderboard', { limit: count, sort: [['score', 'DESC']] });
-        };
-        Properties.db = null;
-        Properties.dbname = "";
-        Properties.properties = null;
-        /*
-         * Set Game Property in local storage
-         *
-         * @param property name
-         * @param property value
-         * @return nothing
-         */
-        Properties.set = function (prop, value) {
-            Properties.db.update("settings", {
-                name: prop
-            }, function (row) {
-                row.value = "" + value;
-                return row;
-            });
-            Properties.db.commit();
-        };
-        return Properties;
-    })();
-    bosco.Properties = Properties;
-})(bosco || (bosco = {}));
-/**
  * Bosco.ts
  *
  * Game Shell
@@ -408,26 +408,25 @@ var bosco;
     var Texture = PIXI.Texture;
     var Container = PIXI.Container;
     var Input = bosco.utils.Input;
+    var Properties = bosco.Properties;
     (function (ScaleType) {
         ScaleType[ScaleType["FILL"] = 0] = "FILL";
         ScaleType[ScaleType["FIXED"] = 1] = "FIXED"; // scale fixed size to fit the screen
     })(bosco.ScaleType || (bosco.ScaleType = {}));
     var ScaleType = bosco.ScaleType;
     bosco.fps = 0;
-    var _prefabs = {};
+    bosco._prefabs = {};
     /**
      * Load assets and start
      */
     function start(config) {
-        if (bosco.Properties && config.properties) {
-            bosco.Properties.init(config.namespace, config.properties);
+        if (config.properties) {
+            Properties.init(config.namespace, config.properties);
         }
         for (var asset in config.assets) {
             PIXI.loader.add(asset, config.assets[asset]);
         }
-        PIXI.loader.load(function (loader, resources) {
-            new Game(config, resources);
-        });
+        PIXI.loader.load(function (loader, resources) { return new Game(config, resources); });
     }
     bosco.start = start;
     var DummyStats = (function () {
@@ -438,15 +437,24 @@ var bosco;
         return DummyStats;
     })();
     /**
-     * Bake a texture
+     *
      * @param name
+     * @param parent
+     * @returns {PIXI.Sprite}
      */
-    function buildComposite(config, level) {
-        if (level === void 0) { level = 0; }
+    function prefab(name, parent) {
+        if (parent === void 0) { parent = viewContainer; }
+        var s = _prefab(bosco.config.resources[name]);
+        if (parent)
+            parent.addChild(s);
+        return s;
+    }
+    bosco.prefab = prefab;
+    function _prefab(config) {
         if (Array.isArray(config)) {
             var container = new Sprite();
             for (var i = 0, l = config.length; i < l; i++) {
-                container.addChild(buildComposite(config[i], level + 1));
+                container.addChild(_prefab(config[i]));
             }
             return container;
         }
@@ -458,16 +466,13 @@ var bosco;
                         sprite.anchor.set(config.anchor.x, config.anchor.y);
                         break;
                     case 'scale':
-                        if (level > 0)
-                            sprite.scale.set(config.scale.x, config.scale.y);
+                        sprite.scale.set(config.scale.x, config.scale.y);
                         break;
                     case 'position':
-                        if (level > 0)
-                            sprite.position.set(config.position.x, config.position.y);
+                        sprite.position.set(config.position.x, config.position.y);
                         break;
                     case 'rotation':
-                        if (level > 0)
-                            sprite.rotation = config.rotation.z;
+                        sprite.rotation = config.rotation.z;
                         break;
                     case 'tint':
                         sprite.tint = config.tint;
@@ -477,41 +482,6 @@ var bosco;
             return sprite;
         }
     }
-    /**
-     * prefab
-     *
-     * Make a sprite from a prefabricated texture
-     * and then configure it.
-     *
-     * @param name
-     * @param parent
-     * @returns {PIXI.Sprite}
-     */
-    function prefab(name, parent) {
-        if (parent === void 0) { parent = viewContainer; }
-        var sprite = new Sprite(_prefabs[name]);
-        var config = bosco.config.resources[name];
-        for (var k in config) {
-            switch (k) {
-                case 'anchor':
-                    sprite.anchor.set(config.anchor.x, config.anchor.y);
-                    break;
-                case 'scale':
-                    sprite.scale.set(config.scale.x, config.scale.y);
-                    break;
-                case 'position':
-                    sprite.position.set(config.position.x, config.position.y);
-                    break;
-                case 'rotation':
-                    sprite.rotation = config.rotation.z;
-                    break;
-            }
-        }
-        if (parent)
-            parent.addChild(sprite);
-        return sprite;
-    }
-    bosco.prefab = prefab;
     var Game = (function () {
         /**
          * Create the game instance
@@ -564,10 +534,6 @@ var bosco;
             this.previousTime = 0;
             var controllers = this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
-            for (var name in config.resources) {
-                var s = buildComposite(config.resources[name]);
-                _prefabs[name] = s.generateTexture(renderer);
-            }
             renderer.view.style.position = 'absolute';
             renderer.view.style.top = '0px';
             renderer.view.style.left = '0px';
