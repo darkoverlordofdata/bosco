@@ -14,7 +14,6 @@ Bosco is...
 * [An insane hologramic monkey](http://bosco.darkoverlordofdata.com/)
 * A game shell that connects your game to the browswer
 
-
 ## Bosco Stack
 
 ```json
@@ -26,8 +25,7 @@ Bosco is...
         "howler.js": "~1.1.26",
         "localstoragedb": "git://github.com/knadh/localStorageDB",
         "pixi.js": "~3.0.8",
-        "stats.js": "*",
-        "tween.ts": "~0.1.2"
+        "stats.js": "*"
       },
       "install": {
         "ignore": ["closure-compiler", "google-closure-library"],
@@ -40,8 +38,7 @@ Bosco is...
           "ezgui": "packages/ezgui/dist/EZGUI.js",
           "howler.js": "packages/howler.js/howler.min.js",
           "pixi.js": "packages/pixi.js/bin/pixi.min.js",
-          "stats.js": "packages/stats.js/build/stats.min.js",
-          "tween.ts": "packages/tween.ts/build/tween.min.js"
+          "stats.js": "packages/stats.js/build/stats.min.js"
         }
       }
 ```

@@ -11,7 +11,10 @@ module example {
 
       this.systems = this.createSystems(Pools.pool);
       this.systems.initialize();
+    }
 
+    stop() {
+      this.systems = null;
     }
 
     update(delta:number) {
@@ -24,9 +27,6 @@ module example {
         .add(pool.createSystem(example.CreateFinishLineSystem))
         .add(pool.createSystem(example.CreatePlayerSystem))
         .add(pool.createSystem(example.CreateOpponentsSystem))
-
-        // Input
-        .add(pool.createSystem(example.InputSystem))
 
         // Update
         .add(pool.createSystem(example.AccelerateSystem))

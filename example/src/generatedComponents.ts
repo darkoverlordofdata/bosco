@@ -21,6 +21,7 @@ module example {
     FinishLine,
     Resource,
     View,
+    Score,
     TotalComponents
   }
 
@@ -49,6 +50,9 @@ module example {
   }
   export class ViewComponent implements IComponent {
     public sprite:Object;
+  }
+  export class ScoreComponent implements IComponent {
+    public value:number;
   }
 
 

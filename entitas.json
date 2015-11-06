@@ -3,8 +3,8 @@
   "src": "lib/src",
   "output": {
     "javascript": "web/src/example/generatedExtensions.js",
-    "typescript": "lib/src/generatedComponents.ts",
-    "declaration": "lib/ext/example.d.ts"
+    "typescript": "example/src/generatedComponents.ts",
+    "declaration": "example/ext/example.d.ts"
   },
   "alloc": {
     "entities": 200,
@@ -29,6 +29,9 @@
     ],
     "View": [
       "sprite:Object"
+    ],
+    "Score": [
+      "value:number"
     ]
   },
   "systems": {
@@ -46,6 +49,7 @@
   },
   "entities": {
     "Accelerating": true,
-    "FinishLine": true
+    "FinishLine": true,
+    "Score": true
   }
 }

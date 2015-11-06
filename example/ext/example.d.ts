@@ -306,6 +306,9 @@ declare module entitas {
     class ViewComponent implements IComponent {
       public sprite:Object;
     }
+    class ScoreComponent implements IComponent {
+      public value:number;
+    }
 
 }
 declare module entitas {
@@ -412,6 +415,8 @@ declare module entitas {
         static Resource: Matcher;
         static _matcherView;
         static View: Matcher;
+        static _matcherScore;
+        static Score: Matcher;
         id: number;
         static uniqueId: number;
         indices: number[];
@@ -563,6 +568,13 @@ declare module entitas {
         addView(sprite:Object);
         replaceView(sprite:Object);
         removeView();
+        static _scoreComponentPool;
+        static clearScoreComponentPool();
+        score: ScoreComponent;
+        hasScore: boolean;
+        addScore(value:number);
+        replaceScore(value:number);
+        removeScore();
         /** Entity count */
         creationIndex: number;
         onEntityReleased: IEntityReleased<EntityReleased>;
@@ -804,6 +816,12 @@ declare module entitas {
         isAccelerating: boolean;
         finishLineEntity: Entity;
         isFinishLine: boolean;
+        scoreEntity: Entity;
+        score: ScoreComponent;
+        hasScore: boolean;
+        setScore(value:number): Entity;
+        replaceScore(value:number): Entity;
+        removeScore(): void;
         totalComponents: number;
         count: number;
         reusableEntitiesCount: number;

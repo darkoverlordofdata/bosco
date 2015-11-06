@@ -119,29 +119,35 @@ declare module bosco {
     import Sprite = PIXI.Sprite;
     import Container = PIXI.Container;
     import SystemRenderer = PIXI.SystemRenderer;
-    enum ScaleType {
-        FILL = 0,
-        FIXED = 1,
-    }
+    /** @type Object raw configuration hash */
     var config: any;
+    /** @type number time change in ms for current frame */
     var delta: number;
+    /** @type number frames per second */
     var fps: number;
-    var _prefabs: {};
+    /**
+     * Set the current controller group
+     *
+     * @param name
+     */
+    function controller(name: any): void;
     /**
      * Load assets and start
      */
     function start(config: any): void;
     /**
+     * Prefab -
      *
+     * Composite an image
      * @param name
      * @param parent
      * @returns {PIXI.Sprite}
      */
-    function prefab(name: string, parent?: any): Sprite;
+    function prefab(name: string, parent?: Container): Sprite;
     class Game {
         stage: Container;
         sprites: Container;
-        fore: Container;
+        foreground: Container;
         renderer: SystemRenderer;
         stats: any;
         config: any;

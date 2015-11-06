@@ -11,11 +11,6 @@
  */
 module bosco {
 
-  declare var Stats;
-  declare var viewContainer;
-  declare var foreContainer;
-  declare var dat;
-
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;
   import Container = PIXI.Container;
@@ -23,16 +18,53 @@ module bosco {
   import Input = bosco.utils.Input;
   import Properties = bosco.Properties;
 
-  export enum ScaleType {
-    FILL, // fill to fit screen
-    FIXED // scale fixed size to fit the screen
-  }
 
+  /** @type Object mrdoodb's stat viewer */
+  declare var Stats;
+  /** @type Object dat.gui */
+  declare var dat;
+  /** @type PIXI.Container game screen */
+  declare var viewContainer:Container;
+  /** @type PIXI.Container anything that <b>must</b> be in foreground */
+  declare var foreContainer:Container;
+
+  /** @type Object raw configuration hash */
   export var config;
+  /** @type number time change in ms for current frame */
   export var delta:number;
+  /** @type number frames per second */
   export var fps:number=0;
-  export var _prefabs = {};
 
+  var _game:Game;
+
+  /**
+   * Set the current controller group
+   *
+   * @param name
+   */
+  export function controller(name) {
+
+    if (!bosco.config.controllers[name]) return;
+
+    /** First, stop the existing controller */
+    for (var controller of _game.controllers) {
+      controller.stop();
+    }
+    _game.controllers = [];
+
+    /** Get the new controller(s) */
+    var root = bosco.config.controllers[name];
+    root = Array.isArray(root) ? root : [root];
+    for (var className of root) {
+      var Class:any = window[config.namespace][className];
+      _game.controllers.push(new Class());
+    }
+
+    /** Start the controller(s) */
+    for (var controller of _game.controllers) {
+      controller.start();
+    }
+  }
   /**
    * Load assets and start
    */
@@ -47,14 +79,10 @@ module bosco {
     PIXI.loader.load((loader, resources) => new Game(config, resources));
   }
 
-  class DummyStats {
-    begin() {}
-    end() {}
-  }
-
-
   /**
+   * Prefab -
    *
+   * Composite an image
    * @param name
    * @param parent
    * @returns {PIXI.Sprite}
@@ -87,7 +115,7 @@ module bosco {
             sprite.position.set(config.position.x, config.position.y);
             break;
           case 'rotation':
-            sprite.rotation = config.rotation.z;
+            sprite.rotation = config.rotation;
             break;
           case 'tint':
             sprite.tint = config.tint;
@@ -102,7 +130,7 @@ module bosco {
 
     stage:Container;
     sprites:Container;
-    fore:Container;
+    foreground:Container;
     renderer:SystemRenderer;
     stats;
     config;
@@ -118,10 +146,12 @@ module bosco {
      */
     constructor(config, resources) {
 
+      _game = this;
+
       this.config = bosco.config = config;
       this.resources = resources;
       this.previousTime = 0;
-      var controllers = this.controllers = [];
+      this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
 
       renderer.view.style.position = 'absolute';
@@ -130,7 +160,7 @@ module bosco {
 
       var stage = this.stage = new Container();
       viewContainer = this.sprites = new Container();
-      foreContainer = this.fore = new Container();
+      foreContainer = this.foreground = new Container();
 
       this.resize();
 
@@ -148,16 +178,9 @@ module bosco {
       window.addEventListener('resize', this.resize, true);
       window.onorientationchange = this.resize;
       stage.addChild(this.sprites);
-      stage.addChild(this.fore);
+      stage.addChild(this.foreground);
 
-      for (var className of config.controllers) {
-        var Class:any = window[config.namespace][className];
-        controllers.push(new Class());
-      }
-
-      for (var controller of controllers) {
-        controller.start();
-      }
+      bosco.controller('main');
       requestAnimationFrame(this.update);
 
     }
@@ -188,7 +211,7 @@ module bosco {
       }
       this.renderer.render(this.stage);
       Input.update();
-      TWEEN.update();
+      //TWEEN.update();
       requestAnimationFrame(this.update);
 
       if (stats) stats.end();

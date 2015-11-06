@@ -29,7 +29,7 @@ module example {
       for (var i = 0, l = entities.length; i < l; i++) {
         var e = entities[i];
 
-        var s:Sprite = bosco.prefab(e.resource.name, false);
+        var s:Sprite = bosco.prefab(e.resource.name, null);
         viewContainer.addChild(s);
         e.addView(s);
       }

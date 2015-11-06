@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Schmup Wars</title>
-    <link rel="icon" type="image/GIF" href="res/favicon64.png"/>
+    <title>Bosco Demo</title>
+    <link rel="icon" type="image/GIF" href="res/favicon.png"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="full-screen" content="yes"/>
     <meta name="screen-orientation" content="portrait"/>
@@ -13,7 +13,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Schmup Wars, oh give me those Schmup Wars...">
+    <meta name="description" content="Bosco Game Shell">
     <meta name="author" content="">
 
     <style>
@@ -39,12 +39,17 @@
     </style>
 </head>
 <body></body>
+
+<!--
+ lib
+ -->
 <script src="dat.gui.min.js"></script>
 <script src="src/stats.js/stats.min.js"></script>
 <script src="src/pixi.js/pixi.min.js"></script>
 <script src="src/tween.ts/tween.min.js"></script>
 <script src="src/localstoragedb/localstoragedb.js"></script>
 <script src="src/chromestoragedb/chromestoragedb.js"></script>
+<script src="src/ezgui/EZGUI.js"></script>
 <script src="src/entitas/entitas.min.js"></script>
 
 <!--
@@ -59,13 +64,12 @@
 <script src="src/bosco/Bosco.js"></script>
 
 <!--
-    Example
+    Demo Application
 -->
 <script src="src/example/generatedComponents.js"></script>
 <script src="src/example/generatedExtensions.js"></script>
 <script src="src/example/systems/AccelerateSystem.js"></script>
 <script src="src/example/systems/DestroySystem.js"></script>
-<script src="src/example/systems/InputSystem.js"></script>
 <script src="src/example/systems/MoveSystem.js"></script>
 <script src="src/example/systems/ReachedFinishSystem.js"></script>
 <script src="src/example/systems/RenderPositionSystem.js"></script>
@@ -74,7 +78,9 @@
 <script src="src/example/systems/CreateFinishLineSystem.js"></script>
 <script src="src/example/systems/CreateOpponentsSystem.js"></script>
 <script src="src/example/systems/CreatePlayerSystem.js"></script>
+<script src="src/example/controllers/MenuController.js"></script>
 <script src="src/example/controllers/GameController.js"></script>
+<script src="src/example/controllers/InputController.js"></script>
 <script src="main.js"></script>
 
 </html>

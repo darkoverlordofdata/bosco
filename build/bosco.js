@@ -409,13 +409,38 @@ var bosco;
     var Container = PIXI.Container;
     var Input = bosco.utils.Input;
     var Properties = bosco.Properties;
-    (function (ScaleType) {
-        ScaleType[ScaleType["FILL"] = 0] = "FILL";
-        ScaleType[ScaleType["FIXED"] = 1] = "FIXED"; // scale fixed size to fit the screen
-    })(bosco.ScaleType || (bosco.ScaleType = {}));
-    var ScaleType = bosco.ScaleType;
+    /** @type number frames per second */
     bosco.fps = 0;
-    bosco._prefabs = {};
+    var _game;
+    /**
+     * Set the current controller group
+     *
+     * @param name
+     */
+    function controller(name) {
+        if (!bosco.config.controllers[name])
+            return;
+        /** First, stop the existing controller */
+        for (var _i = 0, _a = _game.controllers; _i < _a.length; _i++) {
+            var controller = _a[_i];
+            controller.stop();
+        }
+        _game.controllers = [];
+        /** Get the new controller(s) */
+        var root = bosco.config.controllers[name];
+        root = Array.isArray(root) ? root : [root];
+        for (var _b = 0; _b < root.length; _b++) {
+            var className = root[_b];
+            var Class = window[bosco.config.namespace][className];
+            _game.controllers.push(new Class());
+        }
+        /** Start the controller(s) */
+        for (var _c = 0, _d = _game.controllers; _c < _d.length; _c++) {
+            var controller = _d[_c];
+            controller.start();
+        }
+    }
+    bosco.controller = controller;
     /**
      * Load assets and start
      */
@@ -429,15 +454,10 @@ var bosco;
         PIXI.loader.load(function (loader, resources) { return new Game(config, resources); });
     }
     bosco.start = start;
-    var DummyStats = (function () {
-        function DummyStats() {
-        }
-        DummyStats.prototype.begin = function () { };
-        DummyStats.prototype.end = function () { };
-        return DummyStats;
-    })();
     /**
+     * Prefab -
      *
+     * Composite an image
      * @param name
      * @param parent
      * @returns {PIXI.Sprite}
@@ -472,7 +492,7 @@ var bosco;
                         sprite.position.set(config.position.x, config.position.y);
                         break;
                     case 'rotation':
-                        sprite.rotation = config.rotation.z;
+                        sprite.rotation = config.rotation;
                         break;
                     case 'tint':
                         sprite.tint = config.tint;
@@ -515,7 +535,7 @@ var bosco;
                 }
                 _this.renderer.render(_this.stage);
                 Input.update();
-                TWEEN.update();
+                //TWEEN.update();
                 requestAnimationFrame(_this.update);
                 if (stats)
                     stats.end();
@@ -529,17 +549,18 @@ var bosco;
                 _this.stage.scale.x = _this.stage.scale.y = ratio;
                 _this.renderer.resize(Math.ceil(_this.config.width * ratio), Math.ceil(_this.config.height * ratio));
             };
+            _game = this;
             this.config = bosco.config = config;
             this.resources = resources;
             this.previousTime = 0;
-            var controllers = this.controllers = [];
+            this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
             renderer.view.style.position = 'absolute';
             renderer.view.style.top = '0px';
             renderer.view.style.left = '0px';
             var stage = this.stage = new Container();
             viewContainer = this.sprites = new Container();
-            foreContainer = this.fore = new Container();
+            foreContainer = this.foreground = new Container();
             this.resize();
             document.body.appendChild(renderer.view);
             if (config.stats) {
@@ -553,16 +574,8 @@ var bosco;
             window.addEventListener('resize', this.resize, true);
             window.onorientationchange = this.resize;
             stage.addChild(this.sprites);
-            stage.addChild(this.fore);
-            for (var _i = 0, _a = config.controllers; _i < _a.length; _i++) {
-                var className = _a[_i];
-                var Class = window[config.namespace][className];
-                controllers.push(new Class());
-            }
-            for (var _b = 0; _b < controllers.length; _b++) {
-                var controller = controllers[_b];
-                controller.start();
-            }
+            stage.addChild(this.foreground);
+            bosco.controller('main');
             requestAnimationFrame(this.update);
         }
         return Game;

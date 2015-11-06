@@ -25,6 +25,7 @@
     "chromestoragedb": "git://github.com/darkoverlordofdata/chromeStorageDB",
     "localstoragedb": "git://github.com/knadh/localStorageDB",
     "entitas": "git://github.com/darkoverlordofdata/entitas-ts",
+    "ezgui":"git://github.com/Ezelia/EZGUI/",
     "pixi.js": "~3.0.8",
     "stats.js": "*",
     "tween.ts": "~0.1.2"
@@ -39,6 +40,7 @@
       "chromestoragedb": "packages/chromestoragedb/chromestoragedb.js",
       "localstoragedb": "packages/localstoragedb/localstoragedb.js",
       "entitas": "packages/entitas/build/entitas.min.js",
+      "ezgui": "packages/ezgui/dist/EZGUI.js",
       "stats.js": "packages/stats.js/build/stats.min.js",
       "pixi.js": "packages/pixi.js/bin/pixi.min.js",
       "tween.ts": "packages/tween.ts/build/tween.min.js"
