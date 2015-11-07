@@ -8,11 +8,26 @@
          / __/ _ \/ -_) / ___/ _ \ |/|/ / -_) __/ / _ \/ _/ / _  / _ \(_-</ __/ _ \
          \__/_//_/\__/ /_/   \___/__,__/\__/_/    \___/_/  /____/\___/___/\__/\___/
 
-Bosco is not a game engine.
-Bosco is...
-* A chocolaty shell for your code
-* [An insane hologramic monkey](http://bosco.darkoverlordofdata.com/)
-* An experimental game shell.
+Bosco game harness.
+
+## Config
+
+bosco.start(config);
+
+    namespace       game top level object
+    controllers     controller classes
+    fullscreen      true/false
+    scale           false or {x, y}
+    stats           true/false - use mrdoob's stats
+    storage         true/false - use local/chrome storage
+    properties      default storage values
+    width           game renderer width
+    height          game renderer height
+    options         PIXI renderer options
+    assets          assets for PIXI loader
+    resources       bosco prefabs
+    theme           EZGUI theme name
+    ezgui           EZGUI component definitions
 
 ## Bosco Stack
 

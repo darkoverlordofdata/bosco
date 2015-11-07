@@ -70,7 +70,7 @@ bosco.start({
             width: window.innerWidth,
             height: window.innerHeight,
             image: "assets/img/panel-650x400.png",
-            logo: { height: 100, transparent: true, text: "Bosco Speedway",
+            logo: { height: 100, transparent: true, text: "Bosco's Speedway",
                 font: { size: "75px", family: "Skranji", color: "red"} },
 
             buttons: [
