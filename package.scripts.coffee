@@ -124,7 +124,7 @@ module.exports = (project, options = {}) ->
       
     else if projectType is TypeScript
       ###
-      # Build with tsc, then compress
+      # Build with tsc, then compress, then build whole example
       ###
       step.push """
         tsc -p . --outFile build/#{LIB_NAME}.js -d
@@ -132,6 +132,14 @@ module.exports = (project, options = {}) ->
           java -jar #{COMPILER_JAR} \
             --compilation_level #{options.compile} \
             --js_output_file build/#{LIB_NAME}.min.js
+      """
+      files = require(JSCONFIG).files.join(" LF ")
+      step.push """
+        cat #{files} > build/web/example.js
+        cat #{files} | \
+          java -jar #{COMPILER_JAR} \
+            --compilation_level #{options.compile} \
+            --js_output_file build/web/example.min.js
       """
 
     else
@@ -206,11 +214,8 @@ module.exports = (project, options = {}) ->
   """
 
   ### update the cocos2d project file? ###
-  postbuild: do ->
-    if isCocos2d
-      return "cp -f web/project_build.json build/web/project.json"
-    else
-      return ""
+  postbuild: """
+  """
 
   postclosure: """
     cp -f web/asteroids.min.js build/web

@@ -12,36 +12,17 @@ Bosco is not a game engine.
 Bosco is...
 * A chocolaty shell for your code
 * [An insane hologramic monkey](http://bosco.darkoverlordofdata.com/)
-* A game shell that connects your game to the browswer
+* An experimental game shell that connects your game to the browser
 
 ## Bosco Stack
 
-```json
-      "dependencies": {
-        "bosco": "git://github.com/darkoverlordofdata/bosco",
-        "chromestoragedb": "git://github.com/darkoverlordofdata/chromeStorageDB",
-        "entitas": "git://github.com/darkoverlordofdata/entitas-ts",
-        "ezgui":"git://github.com/Ezelia/EZGUI/",
-        "howler.js": "~1.1.26",
-        "localstoragedb": "git://github.com/knadh/localStorageDB",
-        "pixi.js": "~3.0.8",
-        "stats.js": "*"
-      },
-      "install": {
-        "ignore": ["closure-compiler", "google-closure-library"],
-        "path": "web/src",
-        "sources": {
-          "bosco": "packages/bosco/build/bosco.js",
-          "chromestoragedb": "packages/chromestoragedb/chromestoragedb.js",
-          "localstoragedb": "packages/localstoragedb/localstoragedb.min.js",
-          "entitas": "packages/entitas/build/entitas.js",
-          "ezgui": "packages/ezgui/dist/EZGUI.js",
-          "howler.js": "packages/howler.js/howler.min.js",
-          "pixi.js": "packages/pixi.js/bin/pixi.min.js",
-          "stats.js": "packages/stats.js/build/stats.min.js"
-        }
-      }
-```
+    stats.js        *
+    pixi.js         ~3.0.8
+    chromestoragedb git://github.com/darkoverlordofdata/chromeStorageDB
+    localstoragedb  git://github.com/knadh/localStorageDB
+    bosco           git://github.com/darkoverlordofdata/bosco
+    ezgui           git://github.com/Ezelia/EZGUI/
+    entitas         git://github.com/darkoverlordofdata/entitas-ts
 
 # MIT License
 
