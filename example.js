@@ -6302,7 +6302,8 @@ var example;
         CoreComponentIds[CoreComponentIds["Resource"] = 6] = "Resource";
         CoreComponentIds[CoreComponentIds["View"] = 7] = "View";
         CoreComponentIds[CoreComponentIds["Score"] = 8] = "Score";
-        CoreComponentIds[CoreComponentIds["TotalComponents"] = 9] = "TotalComponents";
+        CoreComponentIds[CoreComponentIds["Player"] = 9] = "Player";
+        CoreComponentIds[CoreComponentIds["TotalComponents"] = 10] = "TotalComponents";
     })(example.CoreComponentIds || (example.CoreComponentIds = {}));
     var CoreComponentIds = example.CoreComponentIds;
     entitas.initialize(CoreComponentIds.TotalComponents, { "entities": 200, "components": 128 });
@@ -6360,6 +6361,12 @@ var example;
         return ScoreComponent;
     })();
     example.ScoreComponent = ScoreComponent;
+    var PlayerComponent = (function () {
+        function PlayerComponent() {
+        }
+        return PlayerComponent;
+    })();
+    example.PlayerComponent = PlayerComponent;
     var Pools = (function () {
         function Pools() {
         }
@@ -6409,6 +6416,7 @@ var example;
   var ResourceComponent = example.ResourceComponent;
   var ViewComponent = example.ViewComponent;
   var ScoreComponent = example.ScoreComponent;
+  var PlayerComponent = example.PlayerComponent;
   var CoreComponentIds = example.CoreComponentIds;
   Entity.acceleratableComponent = new AcceleratableComponent();
   Object.defineProperty(Entity.prototype, 'isAcceleratable', {
@@ -6692,6 +6700,25 @@ var example;
     Entity._scoreComponentPool.add(component);
     return this;
   };
+  Entity.playerComponent = new PlayerComponent();
+  Object.defineProperty(Entity.prototype, 'isPlayer', {
+    get: function() {
+      return this.hasComponent(CoreComponentIds.Player);
+    },
+    set: function(value) {
+      if (value !== this.isPlayer) {
+        if (value) {
+          this.addComponent(CoreComponentIds.Player, Entity.playerComponent);
+        } else {
+          this.removeComponent(CoreComponentIds.Player);
+        }
+      }
+    }
+  });
+  Entity.prototype.setPlayer = function(value) {
+    this.isPlayer = value;
+    return this;
+  };
   Matcher._matcherAcceleratable=null;
   
   Object.defineProperty(Matcher, 'Acceleratable', {
@@ -6789,6 +6816,17 @@ var example;
       }
       
       return Matcher._matcherScore;
+    }
+  });
+  Matcher._matcherPlayer=null;
+  
+  Object.defineProperty(Matcher, 'Player', {
+    get: function() {
+      if (Matcher._matcherPlayer == null) {
+        Matcher._matcherPlayer = Matcher.allOf(CoreComponentIds.Player);
+      }
+      
+      return Matcher._matcherPlayer;
     }
   });
   Object.defineProperty(Pool.prototype, 'acceleratingEntity', {
@@ -6966,6 +7004,7 @@ var example;
 var example;
 (function (example) {
     var Matcher = entitas.Matcher;
+    var Text = PIXI.Text;
     var ReachedFinishSystem = (function () {
         function ReachedFinishSystem() {
         }
@@ -6985,6 +7024,27 @@ var example;
             for (var i = 0, l = entities.length; i < l; i++) {
                 var e = entities[i];
                 if (e.position.y > finishLinePosY) {
+                    if (e.isPlayer) {
+                        var label = new Text('', { font: 'bold 50px Arial', fill: 'white' });
+                        label.anchor.set(0.5, 0.5);
+                        label.position.set(bosco.config.width / 2, 100);
+                        viewContainer.addChild(label);
+                        switch (e.score.value) {
+                            case 0:
+                                label.text = "You Win!";
+                                break;
+                            case 1:
+                                label.text = "2nd Place!";
+                                break;
+                            case 2:
+                                label.text = "3rd Place!";
+                                break;
+                            default:
+                                label.text = "You Lose!";
+                        }
+                    }
+                    if (this.pool.hasScore)
+                        this.pool.replaceScore(this.pool.score.value + 1);
                     e.isDestroy = true;
                 }
             }
@@ -7116,7 +7176,7 @@ var example;
             this.pool.createEntity("Finish Line")
                 .setFinishLine(true)
                 .addResource("Finish Line")
-                .addPosition(20, 500, 0);
+                .addPosition(20, 500);
         };
         CreateFinishLineSystem.prototype.setPool = function (pool) {
             this.pool = pool;
@@ -7165,7 +7225,9 @@ var example;
                 .addResource("Player")
                 .addPosition(100, 0, 0)
                 .addMove(0, 25)
-                .setAcceleratable(true);
+                .setAcceleratable(true)
+                .setPlayer(true)
+                .addScore(0);
         };
         CreatePlayerSystem.prototype.setPool = function (pool) {
             this.pool = pool;
@@ -7237,6 +7299,42 @@ var example;
 //# sourceMappingURL=GameController.js.map
 var example;
 (function (example) {
+    var Pools = example.Pools;
+    var Matcher = entitas.Matcher;
+    var Text = PIXI.Text;
+    var ScoreLabelController = (function () {
+        function ScoreLabelController() {
+        }
+        ScoreLabelController.prototype.start = function () {
+            var _this = this;
+            this.label = new Text('Score 0', { font: 'bold 50px Arial', fill: 'white' });
+            this.label.position.set((bosco.config.width - this.label.width) / 2, 10);
+            viewContainer.addChild(this.label);
+            var pool = Pools.pool;
+            pool.getGroup(Matcher.Score).onEntityAdded.add(function (group, entity, index, component) {
+                _this.updateScore(entity.score.value);
+            });
+            this.fps = new Text('FPS', { font: 'bold 30px Arial', fill: 'white' });
+            this.fps.position.set(0, 10);
+            viewContainer.addChild(this.fps);
+        };
+        ScoreLabelController.prototype.update = function (delta) {
+            var fps = bosco.fps;
+            if (this._fps !== fps) {
+                this.fps.text = 'FPS ' + fps;
+                this._fps = fps;
+            }
+        };
+        ScoreLabelController.prototype.updateScore = function (score) {
+            this.label.text = 'Score ' + score;
+        };
+        return ScoreLabelController;
+    })();
+    example.ScoreLabelController = ScoreLabelController;
+})(example || (example = {}));
+//# sourceMappingURL=ScoreLabelController.js.map
+var example;
+(function (example) {
     var Input = bosco.utils.Input;
     var Pools = example.Pools;
     var InputController = (function () {
@@ -7256,11 +7354,11 @@ bosco.start({
     namespace: "example",
     controllers: {
         main: "MenuController",
-        game: ["GameController", "InputController"]
+        game: ["GameController", "InputController", "ScoreLabelController"]
     },
     width: window.innerWidth,
     height: window.innerHeight,
-    fullScreen: true,
+    fullScreen: false,
     theme: "kenney",
     scale: false,
     stats: true,
@@ -7324,7 +7422,7 @@ bosco.start({
             width: window.innerWidth,
             height: window.innerHeight,
             image: "assets/img/panel-650x400.png",
-            logo: { height: 100, transparent: true, text: "Bosco Speedway",
+            logo: { height: 100, transparent: true, text: "Bosco's Speedway",
                 font: { size: "75px", family: "Skranji", color: "red"} },
 
             buttons: [
