@@ -14,6 +14,8 @@
         "example/ext/bosco.d.ts",
         "example/ext/example.d.ts",
         "example/ext/EZGUI.d.ts",
+        "example/ext/Tween.d.ts",
+        "example/ext/localStorageDB.d.ts",
         "example/src/generatedComponents.ts",
         "example/src/systems/AccelerateSystem.ts",
         "example/src/systems/AddViewSystem.ts",
@@ -27,6 +29,7 @@
         "example/src/systems/RenderPositionSystem.ts",
         "example/src/controllers/GameController.ts",
         "example/src/controllers/InputController.ts",
+        "example/src/controllers/ScoreLabelController.ts",
         "example/src/controllers/MenuController.ts"
     ]
 }

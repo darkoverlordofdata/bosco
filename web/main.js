@@ -2,11 +2,11 @@ bosco.start({
     namespace: "example",
     controllers: {
         main: "MenuController",
-        game: ["GameController", "InputController"]
+        game: ["GameController", "InputController", "ScoreLabelController"]
     },
     width: window.innerWidth,
     height: window.innerHeight,
-    fullScreen: true,
+    fullScreen: false,
     theme: "kenney",
     scale: false,
     stats: true,

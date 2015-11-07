@@ -309,6 +309,8 @@ declare module entitas {
     class ScoreComponent implements IComponent {
       public value:number;
     }
+    class PlayerComponent implements IComponent {
+    }
 
 }
 declare module entitas {
@@ -417,6 +419,8 @@ declare module entitas {
         static View: Matcher;
         static _matcherScore;
         static Score: Matcher;
+        static _matcherPlayer;
+        static Player: Matcher;
         id: number;
         static uniqueId: number;
         indices: number[];
@@ -575,6 +579,9 @@ declare module entitas {
         addScore(value:number);
         replaceScore(value:number);
         removeScore();
+        static playerComponent: PlayerComponent;
+        isPlayer: boolean;
+        setPlayer(value: boolean);
         /** Entity count */
         creationIndex: number;
         onEntityReleased: IEntityReleased<EntityReleased>;

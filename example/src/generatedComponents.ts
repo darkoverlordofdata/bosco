@@ -22,6 +22,7 @@ module example {
     Resource,
     View,
     Score,
+    Player,
     TotalComponents
   }
 
@@ -53,6 +54,8 @@ module example {
   }
   export class ScoreComponent implements IComponent {
     public value:number;
+  }
+  export class PlayerComponent implements IComponent {
   }
 
 

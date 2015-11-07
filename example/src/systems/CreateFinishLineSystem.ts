@@ -19,7 +19,7 @@ module example {
       this.pool.createEntity("Finish Line")
         .setFinishLine(true)
         .addResource("Finish Line")
-        .addPosition(20, 500, 0);
+        .addPosition(20, 500);
     }
 
     public setPool(pool:Pool) {

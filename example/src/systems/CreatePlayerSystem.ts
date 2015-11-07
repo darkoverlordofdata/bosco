@@ -20,7 +20,9 @@ module example {
         .addResource("Player")
         .addPosition(100, 0, 0)
         .addMove(0, 25)
-        .setAcceleratable(true);
+        .setAcceleratable(true)
+        .setPlayer(true)
+        .addScore(0);
     }
     
     public setPool(pool:Pool) {

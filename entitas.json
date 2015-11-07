@@ -32,7 +32,8 @@
     ],
     "Score": [
       "value:number"
-    ]
+    ],
+    "Player": false
   },
   "systems": {
     "AccelerateSystem": true,

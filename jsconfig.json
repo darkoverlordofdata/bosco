@@ -28,6 +28,7 @@
     "web/src/example/systems/CreatePlayerSystem.js",
     "web/src/example/controllers/MenuController.js",
     "web/src/example/controllers/GameController.js",
+    "web/src/example/controllers/ScoreLabelController.js",
     "web/src/example/controllers/InputController.js",
     "web/main.js"
   ]
