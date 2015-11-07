@@ -12,7 +12,7 @@ Bosco is not a game engine.
 Bosco is...
 * A chocolaty shell for your code
 * [An insane hologramic monkey](http://bosco.darkoverlordofdata.com/)
-* An experimental game shell that connects your game to the browser
+* An experimental game shell.
 
 ## Bosco Stack
 
