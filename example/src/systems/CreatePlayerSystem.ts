@@ -18,7 +18,7 @@ module example {
     public initialize() {
       this.pool.createEntity("Player")
         .addResource("Player")
-        .addPosition(100, 0, 0)
+        .addPosition(100, 0)
         .addMove(0, 25)
         .setAcceleratable(true)
         .setPlayer(true)

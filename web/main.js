@@ -9,7 +9,7 @@ bosco.start({
     fullScreen: false,
     theme: "kenney",
     scale: false,
-    stats: true,
+    stats: false,
     storage: false,
     options: {
         antialiasing: false,
