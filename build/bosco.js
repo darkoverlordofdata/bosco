@@ -582,8 +582,16 @@ var bosco;
             window.onorientationchange = this.resize;
             stage.addChild(this.sprites);
             stage.addChild(this.foreground);
-            bosco.controller('main');
-            requestAnimationFrame(this.update);
+            if (config.theme) {
+                EZGUI.Theme.load([("assets/" + config.theme + "-theme/" + config.theme + "-theme.json")], function () {
+                    bosco.controller('main');
+                    requestAnimationFrame(_this.update);
+                });
+            }
+            else {
+                bosco.controller('main');
+                requestAnimationFrame(this.update);
+            }
         }
         return Game;
     })();

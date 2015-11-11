@@ -24,6 +24,8 @@ module bosco {
   declare var Stats;
   /** @type Object dat.gui */
   declare var dat;
+  /** @type Object EZGUI */
+  declare var EZGUI;
   /** @type PIXI.Container game screen */
   export var viewContainer:Container;
   /** @type PIXI.Container anything that <b>must</b> be in foreground */
@@ -183,8 +185,17 @@ module bosco {
       stage.addChild(this.sprites);
       stage.addChild(this.foreground);
 
-      bosco.controller('main');
-      requestAnimationFrame(this.update);
+      if (config.theme) {
+        EZGUI.Theme.load([`assets/${config.theme}-theme/${config.theme}-theme.json`], () => {
+          bosco.controller('main');
+          requestAnimationFrame(this.update);
+        });
+
+      } else {
+        bosco.controller('main');
+        requestAnimationFrame(this.update);
+      }
+
 
     }
 
