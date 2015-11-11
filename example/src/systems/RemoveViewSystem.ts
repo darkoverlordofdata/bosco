@@ -1,7 +1,5 @@
 module example {
 
-  declare var viewContainer;
-
   import Pool = entitas.Pool;
   import Group = entitas.Group;
   import Entity = entitas.Entity;
@@ -44,7 +42,8 @@ module example {
     }
 
     protected onEntityRemoved(group:Group, entity:Entity, index:number, component:IComponent) {
-      viewContainer.removeChild((<ViewComponent>component).sprite);
+      var sprite:PIXI.Sprite = <PIXI.Sprite>(<ViewComponent>component).sprite;
+      bosco.viewContainer.removeChild(sprite);
     }
   }
 }

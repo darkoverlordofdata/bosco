@@ -11,8 +11,6 @@ module example {
 
   import Text = PIXI.Text;
 
-  declare var viewContainer;
-
   export class ReachedFinishSystem implements IReactiveSystem, ISetPool {
     protected pool:Pool;
 
@@ -34,7 +32,7 @@ module example {
             var label = new Text('', { font: 'bold 50px Arial', fill: 'white' });
             label.anchor.set(0.5, 0.5);
             label.position.set(bosco.config.width/2, 100);
-            viewContainer.addChild(label);
+            bosco.viewContainer.addChild(label);
 
             switch (e.score.value) {
               case 0:

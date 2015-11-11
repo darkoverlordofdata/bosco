@@ -10,6 +10,7 @@
  *
  */
 module bosco {
+  "use strict";
 
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;
@@ -24,9 +25,9 @@ module bosco {
   /** @type Object dat.gui */
   declare var dat;
   /** @type PIXI.Container game screen */
-  declare var viewContainer:Container;
+  export var viewContainer:Container;
   /** @type PIXI.Container anything that <b>must</b> be in foreground */
-  declare var foreContainer:Container;
+  export var foreContainer:Container;
 
   /** @type Object raw configuration hash */
   export var config;
@@ -87,7 +88,7 @@ module bosco {
    * @param parent
    * @returns {PIXI.Sprite}
    */
-  export function prefab(name:string, parent=viewContainer): Sprite {
+  export function prefab(name:string, parent=bosco.viewContainer): Sprite {
 
     var s = _prefab(bosco.config.resources[name]);
     if (parent) parent.addChild(s);
@@ -159,8 +160,8 @@ module bosco {
       renderer.view.style.left = '0px';
 
       var stage = this.stage = new Container();
-      viewContainer = this.sprites = new Container();
-      foreContainer = this.foreground = new Container();
+      bosco.viewContainer = this.sprites = new Container();
+      bosco.foreContainer = this.foreground = new Container();
 
       this.resize();
 

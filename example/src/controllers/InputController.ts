@@ -1,7 +1,5 @@
 module example {
 
-  declare var viewContainer;
-
   import Input = bosco.utils.Input;
   import Pools = example.Pools;
 

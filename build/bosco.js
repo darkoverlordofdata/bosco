@@ -404,6 +404,7 @@ var bosco;
  */
 var bosco;
 (function (bosco) {
+    "use strict";
     var Sprite = PIXI.Sprite;
     var Texture = PIXI.Texture;
     var Container = PIXI.Container;
@@ -463,7 +464,7 @@ var bosco;
      * @returns {PIXI.Sprite}
      */
     function prefab(name, parent) {
-        if (parent === void 0) { parent = viewContainer; }
+        if (parent === void 0) { parent = bosco.viewContainer; }
         var s = _prefab(bosco.config.resources[name]);
         if (parent)
             parent.addChild(s);
@@ -559,8 +560,8 @@ var bosco;
             renderer.view.style.top = '0px';
             renderer.view.style.left = '0px';
             var stage = this.stage = new Container();
-            viewContainer = this.sprites = new Container();
-            foreContainer = this.foreground = new Container();
+            bosco.viewContainer = this.sprites = new Container();
+            bosco.foreContainer = this.foreground = new Container();
             this.resize();
             document.body.appendChild(renderer.view);
             if (config.stats) {

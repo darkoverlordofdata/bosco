@@ -3,7 +3,6 @@ module example {
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;
   import ParticleBuffer = PIXI.ParticleBuffer;
-  declare var viewContainer;
 
   import Pool = entitas.Pool;
   import Group = entitas.Group;
@@ -30,7 +29,7 @@ module example {
         var e = entities[i];
 
         var s:Sprite = bosco.prefab(e.resource.name, null);
-        viewContainer.addChild(s);
+        bosco.viewContainer.addChild(s);
         e.addView(s);
       }
     }

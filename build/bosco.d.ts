@@ -119,6 +119,10 @@ declare module bosco {
     import Sprite = PIXI.Sprite;
     import Container = PIXI.Container;
     import SystemRenderer = PIXI.SystemRenderer;
+    /** @type PIXI.Container game screen */
+    var viewContainer: Container;
+    /** @type PIXI.Container anything that <b>must</b> be in foreground */
+    var foreContainer: Container;
     /** @type Object raw configuration hash */
     var config: any;
     /** @type number time change in ms for current frame */
