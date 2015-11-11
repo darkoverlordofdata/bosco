@@ -6,6 +6,7 @@
  */
 var bosco;
 (function (bosco) {
+    "use strict";
     var Properties = (function () {
         function Properties() {
         }
@@ -103,6 +104,7 @@ var bosco;
 (function (bosco) {
     var utils;
     (function (utils) {
+        "use strict";
         var Input = (function () {
             function Input() {
                 var _this = this;
@@ -210,6 +212,7 @@ var bosco;
 (function (bosco) {
     var utils;
     (function (utils) {
+        "use strict";
         var Rnd = (function () {
             function Rnd() {
             }
@@ -248,6 +251,7 @@ var bosco;
 (function (bosco) {
     var utils;
     (function (utils) {
+        "use strict";
         var Timer = (function () {
             function Timer(delay, repeat) {
                 if (repeat === void 0) { repeat = false; }
@@ -335,6 +339,7 @@ var bosco;
 (function (bosco) {
     var utils;
     (function (utils) {
+        "use strict";
         // Thanks to Riven
         // From: http://riven8192.blogspot.com/2009/08/fastmath-sincos-lookup-tables.html
         var TrigLUT = (function () {
@@ -386,6 +391,7 @@ var bosco;
  */
 var bosco;
 (function (bosco) {
+    "use strict";
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }

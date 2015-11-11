@@ -1,4 +1,5 @@
 module bosco.utils {
+  "use strict";
 	export class Rnd {
     
 		public static nextBool() {

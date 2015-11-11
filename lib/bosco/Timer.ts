@@ -1,5 +1,6 @@
 
 module bosco.utils {
+	"use strict";
 
 	export class Timer {
 	

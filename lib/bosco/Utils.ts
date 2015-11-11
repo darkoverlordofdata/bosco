@@ -5,6 +5,7 @@
  *
  */
 module bosco {
+  "use strict";
 
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;

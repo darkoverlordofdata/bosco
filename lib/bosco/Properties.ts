@@ -5,6 +5,7 @@
  *
  */
 module bosco {
+  "use strict";
 
   declare var chromeStorageDB;
 

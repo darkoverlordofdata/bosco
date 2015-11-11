@@ -1,6 +1,5 @@
 module bosco.utils {
-
-  declare var viewContainer;
+  "use strict";
 
   export class Input {
 
