@@ -123,6 +123,8 @@ declare module bosco {
     var viewContainer: Container;
     /** @type PIXI.Container anything that <b>must</b> be in foreground */
     var foreContainer: Container;
+    /** @type Object PIXI loader return values */
+    var resources: any;
     /** @type Object raw configuration hash */
     var config: any;
     /** @type number time change in ms for current frame */

@@ -14,10 +14,10 @@ module bosco {
 
   import Sprite = PIXI.Sprite;
   import Texture = PIXI.Texture;
-  import Container = PIXI.Container;
-  import SystemRenderer = PIXI.SystemRenderer;
   import Input = bosco.utils.Input;
+  import Container = PIXI.Container;
   import Properties = bosco.Properties;
+  import SystemRenderer = PIXI.SystemRenderer;
 
 
   /** @type Object mrdoodb's stat viewer */
@@ -29,6 +29,8 @@ module bosco {
   /** @type PIXI.Container anything that <b>must</b> be in foreground */
   export var foreContainer:Container;
 
+  /** @type Object PIXI loader return values */
+  export var resources;
   /** @type Object raw configuration hash */
   export var config;
   /** @type number time change in ms for current frame */
@@ -150,7 +152,7 @@ module bosco {
       _game = this;
 
       this.config = bosco.config = config;
-      this.resources = resources;
+      this.resources = bosco.resources = resources;
       this.previousTime = 0;
       this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);

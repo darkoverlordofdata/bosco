@@ -413,8 +413,8 @@ var bosco;
     "use strict";
     var Sprite = PIXI.Sprite;
     var Texture = PIXI.Texture;
-    var Container = PIXI.Container;
     var Input = bosco.utils.Input;
+    var Container = PIXI.Container;
     var Properties = bosco.Properties;
     /** @type number frames per second */
     bosco.fps = 0;
@@ -558,7 +558,7 @@ var bosco;
             };
             _game = this;
             this.config = bosco.config = config;
-            this.resources = resources;
+            this.resources = bosco.resources = resources;
             this.previousTime = 0;
             this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
