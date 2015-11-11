@@ -7,29 +7,19 @@
         "preserveConstEnums": false,
         "sourceMap": true,
         "experimentalDecorators": true,
-        "outDir": "web/src/example"
+        "outDir": "web/src/bosco"
     },
     "files": [
         "example/ext/pixi.js.d.ts",
-        "example/ext/bosco.d.ts",
-        "example/ext/example.d.ts",
-        "example/ext/EZGUI.d.ts",
         "example/ext/Tween.d.ts",
         "example/ext/localStorageDB.d.ts",
-        "example/src/generatedComponents.ts",
-        "example/src/systems/AccelerateSystem.ts",
-        "example/src/systems/AddViewSystem.ts",
-        "example/src/systems/CreateFinishLineSystem.ts",
-        "example/src/systems/CreateOpponentsSystem.ts",
-        "example/src/systems/CreatePlayerSystem.ts",
-        "example/src/systems/DestroySystem.ts",
-        "example/src/systems/MoveSystem.ts",
-        "example/src/systems/ReachedFinishSystem.ts",
-        "example/src/systems/RemoveViewSystem.ts",
-        "example/src/systems/RenderPositionSystem.ts",
-        "example/src/controllers/GameController.ts",
-        "example/src/controllers/InputController.ts",
-        "example/src/controllers/ScoreLabelController.ts",
-        "example/src/controllers/MenuController.ts"
+        "example/ext/example.d.ts",
+        "lib/bosco/Properties.ts",
+        "lib/bosco/Input.ts",
+        "lib/bosco/Rnd.ts",
+        "lib/bosco/Timer.ts",
+        "lib/bosco/TrigLUT.ts",
+        "lib/bosco/Utils.ts",
+        "lib/bosco/Bosco.ts"
     ]
 }
