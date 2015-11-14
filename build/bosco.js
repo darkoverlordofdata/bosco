@@ -582,7 +582,7 @@ var bosco;
             window.onorientationchange = this.resize;
             stage.addChild(this.sprites);
             stage.addChild(this.foreground);
-            if (config.theme) {
+            if (config.ezgui && config.theme) {
                 EZGUI.Theme.load([("assets/" + config.theme + "-theme/" + config.theme + "-theme.json")], function () {
                     bosco.controller('main');
                     requestAnimationFrame(_this.update);

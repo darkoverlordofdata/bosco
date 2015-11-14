@@ -131,6 +131,7 @@ declare module bosco {
     var delta: number;
     /** @type number frames per second */
     var fps: number;
+    var world: any;
     /**
      * Set the current controller group
      *

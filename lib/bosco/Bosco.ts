@@ -39,6 +39,8 @@ module bosco {
   export var delta:number;
   /** @type number frames per second */
   export var fps:number=0;
+  
+  export var world;
 
   var _game:Game;
 
@@ -185,7 +187,7 @@ module bosco {
       stage.addChild(this.sprites);
       stage.addChild(this.foreground);
 
-      if (config.theme) {
+      if (config.ezgui && config.theme) {
         EZGUI.Theme.load([`assets/${config.theme}-theme/${config.theme}-theme.json`], () => {
           bosco.controller('main');
           requestAnimationFrame(this.update);
