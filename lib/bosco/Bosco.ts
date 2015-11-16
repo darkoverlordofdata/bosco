@@ -49,7 +49,7 @@ module bosco {
    *
    * @param name
    */
-  export function controller(name) {
+  export function controller(name, ...args) {
 
     if (!bosco.config.controllers[name]) return;
 
@@ -69,7 +69,7 @@ module bosco {
 
     /** Start the controller(s) */
     for (var controller of _game.controllers) {
-      controller.start();
+      controller.start(...args);
     }
   }
   /**

@@ -425,26 +425,30 @@ var bosco;
      * @param name
      */
     function controller(name) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
         if (!bosco.config.controllers[name])
             return;
         /** First, stop the existing controller */
-        for (var _i = 0, _a = _game.controllers; _i < _a.length; _i++) {
-            var controller = _a[_i];
+        for (var _a = 0, _b = _game.controllers; _a < _b.length; _a++) {
+            var controller = _b[_a];
             controller.stop();
         }
         _game.controllers = [];
         /** Get the new controller(s) */
         var root = bosco.config.controllers[name];
         root = Array.isArray(root) ? root : [root];
-        for (var _b = 0; _b < root.length; _b++) {
-            var className = root[_b];
+        for (var _c = 0; _c < root.length; _c++) {
+            var className = root[_c];
             var Class = window[bosco.config.namespace][className];
             _game.controllers.push(new Class());
         }
         /** Start the controller(s) */
-        for (var _c = 0, _d = _game.controllers; _c < _d.length; _c++) {
-            var controller = _d[_c];
-            controller.start();
+        for (var _d = 0, _e = _game.controllers; _d < _e.length; _d++) {
+            var controller = _e[_d];
+            controller.start.apply(controller, args);
         }
     }
     bosco.controller = controller;

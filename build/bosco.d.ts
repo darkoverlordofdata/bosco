@@ -137,7 +137,7 @@ declare module bosco {
      *
      * @param name
      */
-    function controller(name: any): void;
+    function controller(name: any, ...args: any[]): void;
     /**
      * Load assets and start
      */
