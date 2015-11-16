@@ -518,6 +518,8 @@ var bosco;
             var _this = this;
             this.totalFrames = 0;
             this.elapsedTime = 0;
+            this.tween = false;
+            this.input = false;
             /**
              * Game Loop
              * @param time
@@ -541,8 +543,9 @@ var bosco;
                     controllers[i].update(delta);
                 }
                 _this.renderer.render(_this.stage);
-                Input.update();
-                if (window['TWEEN'])
+                if (_this.input)
+                    Input.update();
+                if (_this.tween)
                     TWEEN.update();
                 requestAnimationFrame(_this.update);
                 if (stats)
@@ -560,6 +563,8 @@ var bosco;
             _game = this;
             this.config = bosco.config = config;
             this.resources = bosco.resources = resources;
+            this.tween = config.tween;
+            this.input = config.input;
             this.previousTime = 0;
             this.controllers = [];
             var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);

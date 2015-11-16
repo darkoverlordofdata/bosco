@@ -163,6 +163,8 @@ declare module bosco {
         previousTime: number;
         private totalFrames;
         private elapsedTime;
+        tween: boolean;
+        input: boolean;
         /**
          * Create the game instance
          * @param resources

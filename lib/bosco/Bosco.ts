@@ -146,6 +146,8 @@ module bosco {
     previousTime:number;
     private totalFrames:number=0;
     private elapsedTime:number=0;
+    tween:boolean=false;
+    input:boolean=false;
 
     /**
      * Create the game instance
@@ -157,6 +159,8 @@ module bosco {
 
       this.config = bosco.config = config;
       this.resources = bosco.resources = resources;
+      this.tween = config.tween;
+      this.input = config.input;
       this.previousTime = 0;
       this.controllers = [];
       var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
@@ -225,9 +229,10 @@ module bosco {
       for (var i=0, l=controllers.length; i<l; i++) {
         controllers[i].update(delta);
       }
+      
       this.renderer.render(this.stage);
-      Input.update();
-      if (window['TWEEN']) TWEEN.update();
+      if (this.input) Input.update();
+      if (this.tween) TWEEN.update();
       requestAnimationFrame(this.update);
 
       if (stats) stats.end();
