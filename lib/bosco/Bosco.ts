@@ -227,7 +227,7 @@ module bosco {
       }
       this.renderer.render(this.stage);
       Input.update();
-      //TWEEN.update();
+      if (window['TWEEN']) TWEEN.update();
       requestAnimationFrame(this.update);
 
       if (stats) stats.end();

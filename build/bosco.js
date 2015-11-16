@@ -542,7 +542,8 @@ var bosco;
                 }
                 _this.renderer.render(_this.stage);
                 Input.update();
-                //TWEEN.update();
+                if (window['TWEEN'])
+                    TWEEN.update();
                 requestAnimationFrame(_this.update);
                 if (stats)
                     stats.end();
