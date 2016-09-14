@@ -36,17 +36,17 @@
     "Player": false
   },
   "systems": {
-    "AccelerateSystem": true,
-    "DestroySystem": true,
-    "InputSystem": true,
-    "MoveSystem": true,
-    "ReachedFinishSystem": true,
-    "RenderPositionSystem": true,
-    "AddViewSystem": true,
-    "RemoveViewSystem": true,
-    "CreatePlayerSystem": true,
-    "CreateOpponentsSystem": true,
-    "CreateFinishLineSystem": true
+    "AccelerateSystem": ["IReactiveSystem", "ISetPool"],
+    "DestroySystem": ["IReactiveSystem", "ISetPool"],
+    "InputSystem": ["IExecuteSystem", "IInitializeSystem", "ISetPool"],
+    "MoveSystem": ["IExecuteSystem", "ISetPool"],
+    "ReachedFinishSystem": ["IReactiveSystem", "ISetPool"],
+    "RenderPositionSystem": ["IReactiveSystem", "IEnsureComponents"],
+    "AddViewSystem": ["IReactiveSystem"],
+    "RemoveViewSystem": ["IMultiReactiveSystem", "IEnsureComponents", "ISetPool"],
+    "CreatePlayerSystem": ["IInitializeSystem", "ISetPool"],
+    "CreateOpponentsSystem": ["IInitializeSystem", "ISetPool"],
+    "CreateFinishLineSystem": ["IInitializeSystem", "ISetPool"]
   },
   "entities": {
     "Accelerating": true,

@@ -33,7 +33,6 @@ bosco.start(config);
 
     stats.js        *
     pixi.js         ~3.0.8
-    chromestoragedb git://github.com/darkoverlordofdata/chromeStorageDB
     localstoragedb  git://github.com/knadh/localStorageDB
     bosco           git://github.com/darkoverlordofdata/bosco
     ezgui           git://github.com/Ezelia/EZGUI/
@@ -41,7 +40,7 @@ bosco.start(config);
 
 # MIT License
 
-Copyright (c) 2015 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+Copyright (c) 2015-2016 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -51,7 +51,7 @@ module.exports = (project, options = {}) ->
   ### VS Code ctrl-shift-b ###
   _vscode_build: do ->
     switch projectType
-      when TypeScript then "tsc --watch"
+      when TypeScript then "entitas generate && tsc -p ./tsconfig_bosco.json && tsc -p ./tsconfig_example.json"
       when CoffeeScript then "coffee -o web/src/#{LIB_NAME} -cm lib "
       # when CoffeeScript then "coffee -o web/src/#{LIB_NAME} -wcm lib "
 
