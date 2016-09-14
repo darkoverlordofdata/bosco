@@ -55,74 +55,14 @@ module.exports = (project, options = {}) ->
       when CoffeeScript then "coffee -o web/src/#{LIB_NAME} -cm lib "
       # when CoffeeScript then "coffee -o web/src/#{LIB_NAME} -wcm lib "
 
-  ### Build the android asset folder ###
-  android: do ->
-    options.compile ?= 'WHITESPACE_ONLY'
-    
-    step = []
-
-    if isCocos2d
-      files = getCocos2dFiles(false).join(' LF ')
-      step.push """
-        cp -f lib/src/cclib-rt.js web/src/#{LIB_NAME}/cclib-rt.js
-        cp -f web/main.js #{ANDROID_ASSETS}/main.js
-        cp -f web/project_android.json #{ANDROID_ASSETS}/project.json
-      """
-
-      if options.compile?
-        step.push """
-          cat #{files} | java -jar #{COMPILER_JAR} \
-            --warning_level=QUIET \
-            --compilation_level #{options.compile} \
-            --js_output_file #{ANDROID_ASSETS}#{LIB_NAME}.js
-        """
-      else
-        step.push """
-          cp -fr web/src #{ANDROID_ASSETS}/src
-        """
-
-    return step
 
   ### build the project ###
   build: do ->
     options.compile ?= 'ADVANCED_OPTIMIZATIONS'
     
-    step = [].concat(project.config.build)
+    step = []#.concat(project.config.build)
       
-    if isCocos2d
-      ###
-      # Use cocos2d project.json to build the target
-      ###
-      files = getCocos2dFiles(true).join(' LF ')
-      if options.compile?
-        step.push """
-          cat #{files} | java -jar #{COMPILER_JAR} \
-            --jscomp_error=checkTypes \
-            --warning_level=QUIET \
-            --compilation_level #{options.compile} \
-            --js_output_file build/web/main.js
-        """
-      else
-        step.push """
-          cp -fr web/src build/web/src
-          mkdir build/web/frameworks
-          cp -fr web/frameworks/cocos2d-html5 build/web/frameworks/cocos2d-html5
-        """
-    
-    else if projectType is CoffeeScript
-      ###
-      # Build after recompiling all coffeescript together
-      ###
-      files = require(CSCONFIG).files.join(" LF ")
-      step.push """
-        cat #{files} | coffee -cs > build/#{LIB_NAME}.js 
-        cat #{files} | coffee -cs | \
-          java -jar #{COMPILER_JAR} \
-            --compilation_level #{options.compile} \
-            --js_output_file build/#{LIB_NAME}.min.js
-      """
-      
-    else if projectType is TypeScript
+    if projectType is TypeScript
       ###
       # Build with tsc, then compress, then build whole example
       ###
@@ -132,14 +72,6 @@ module.exports = (project, options = {}) ->
           java -jar #{COMPILER_JAR} \
             --compilation_level #{options.compile} \
             --js_output_file build/#{LIB_NAME}.min.js
-      """
-      files = require(JSCONFIG).files.join(" LF ")
-      step.push """
-        cat #{files} > build/web/example.js
-        cat #{files} | \
-          java -jar #{COMPILER_JAR} \
-            --compilation_level #{options.compile} \
-            --js_output_file build/web/example.min.js
       """
 
     else
@@ -159,34 +91,8 @@ module.exports = (project, options = {}) ->
   ### delete the prior build items ###
   clean: """
     rm -rf build/*
-    mkdir -p build
-    mkdir -p build/web
-    mkdir -p build/lib
   """
 
-  ### closure build ###
-  closure: """
-    npm run transpile
-    tools/convert
-    java -jar #{PLOVR} build config.js
-  """
-  
-  ### copy the output to downstream project ###
-  deploy: """
-    cp -rf web/res #{ANDROID_ASSETS}
-    cp -rf web/src #{ANDROID_ASSETS}
-    cp -f web/main.js #{ANDROID_ASSETS}
-    cp -f web/project.json #{ANDROID_ASSETS}
-  """
-
-  ### collect dependencies for closure compiler ###
-  depswriter: """
-    python #{CLOSURE_BIN}/depswriter.py \
-      --root_with_prefix='#{LIB_ASH} #{GOOG_BASE}/#{LIB_ASH}' \
-      --root_with_prefix='#{LIB_ASTEROIDS} #{GOOG_BASE}/#{LIB_ASTEROIDS}' \
-      --root_with_prefix='web #{GOOG_BASE}/web' \
-      > web/#{LIB_NAME}.dep.js
-  """
 
   ### process bower dependencies ###
   get: """
@@ -208,52 +114,17 @@ module.exports = (project, options = {}) ->
       --destination ./build/web
   """
 
-  ### create appcache manifest for build ###
-  manifest: """
-    gulp manifest
-  """
-
-  ### update the cocos2d project file? ###
-  postbuild: """
-  """
-
-  postclosure: """
-    cp -f web/asteroids.min.js build/web
-  """
-    
   ### get the dependencies ###
   postinstall: """
     bower install
     npm run get
   """
 
-  ### prepare for android build ###
-  preandroid: """
-    npm run predeploy
-    npm run transpile
-    npm run resources
-    cp -fr web/res #{ANDROID_ASSETS}
-  """
 
   ### prepare for build ###
   prebuild: """
     npm run clean -s
   """
-
-  ### remove prior deployment ###
-  predeploy: """
-    rm -rf #{ANDROID_ASSETS}/res
-    rm -rf #{ANDROID_ASSETS}/src
-    rm -f #{ANDROID_ASSETS}/main.js
-    rm -f #{ANDROID_ASSETS}/project.json
-  """
-
-  ### copy the resources ###
-  resources: do ->
-    if project.config.resources?
-      return [].concat(project.config.resources)
-    else 
-      return ''
 
   ### run the dev version of the app ###
   start: """
@@ -285,37 +156,5 @@ module.exports = (project, options = {}) ->
         step.push "coffee -o web/src/example -cm example" if fs.existsSync('./example')
         return step
         
-
-
-###
- *
- * Get Cocos2d Files
- *
- * get list of source files for cocos2d projects
- *
- * @param {boolean} standalone - include cocos2d libraries + main
- * @return {Array<string>} list of file names
-###
-getCocos2dFiles = (standalone=false) ->
-
-  return [] unless fs.existsSync("./web/project.json")
-
-  cocos2d = require("./web/project.json")
-
-  root: "./web/#{cocos2d.engineDir}"
-  if standalone # include the framework
-    moduleConfig = require("#{root}/moduleConfig.json")
-    files = ["#{root}/#{moduleConfig.bootFile}"]
-    for module in cocos2d.modules
-      for name, value of moduleConfig.module[module]
-        for file in moduleConfig.module[value]
-          files.push("#{root}/#{file}") unless moduleConfig.module[file]?
-  else files = []
-
-  for file in cocos2d.jsList
-    files.push("./web/#{file}")
-
-  files.push("./web/main.js") unless standalone
-  return files
 
 

@@ -41,11 +41,11 @@ module bosco {
       Properties.dbname = name;
       Properties.properties = properties;
 
-      if (window['chrome']) {
-        chromeStorageDB(Properties.dbname, localStorage, (db) => initializeDb(Properties.db = db));
-      } else {
+      // if (window['chrome']) {
+      //   chromeStorageDB(Properties.dbname, localStorage, (db) => initializeDb(Properties.db = db));
+      // } else {
         initializeDb(Properties.db = new localStorageDB(Properties.dbname));
-      }
+      // }
 
     }
 

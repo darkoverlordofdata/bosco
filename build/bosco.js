@@ -31,12 +31,11 @@ var bosco;
             }
             Properties.dbname = name;
             Properties.properties = properties;
-            if (window['chrome']) {
-                chromeStorageDB(Properties.dbname, localStorage, function (db) { return initializeDb(Properties.db = db); });
-            }
-            else {
-                initializeDb(Properties.db = new localStorageDB(Properties.dbname));
-            }
+            // if (window['chrome']) {
+            //   chromeStorageDB(Properties.dbname, localStorage, (db) => initializeDb(Properties.db = db));
+            // } else {
+            initializeDb(Properties.db = new localStorageDB(Properties.dbname));
+            // }
         };
         /*
          * Get Game Property from local storage
@@ -97,7 +96,7 @@ var bosco;
             Properties.db.commit();
         };
         return Properties;
-    })();
+    }());
     bosco.Properties = Properties;
 })(bosco || (bosco = {}));
 var bosco;
@@ -204,7 +203,7 @@ var bosco;
             };
             Input._input = new Input();
             return Input;
-        })();
+        }());
         utils.Input = Input;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
@@ -243,7 +242,7 @@ var bosco;
                 }
             };
             return Rnd;
-        })();
+        }());
         utils.Rnd = Rnd;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
@@ -304,7 +303,7 @@ var bosco;
                 return this.delay;
             };
             return Timer;
-        })();
+        }());
         utils.Timer = Timer;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
@@ -379,7 +378,7 @@ var bosco;
                 }
             };
             return TrigLUT;
-        })();
+        }());
         utils.TrigLUT = TrigLUT;
     })(utils = bosco.utils || (bosco.utils = {}));
 })(bosco || (bosco = {}));
@@ -440,8 +439,8 @@ var bosco;
         /** Get the new controller(s) */
         var root = bosco.config.controllers[name];
         root = Array.isArray(root) ? root : [root];
-        for (var _c = 0; _c < root.length; _c++) {
-            var className = root[_c];
+        for (var _c = 0, root_1 = root; _c < root_1.length; _c++) {
+            var className = root_1[_c];
             var Class = window[bosco.config.namespace][className];
             _game.controllers.push(new Class());
         }
@@ -604,7 +603,7 @@ var bosco;
             }
         }
         return Game;
-    })();
+    }());
     bosco.Game = Game;
 })(bosco || (bosco = {}));
 //# sourceMappingURL=bosco.js.map
