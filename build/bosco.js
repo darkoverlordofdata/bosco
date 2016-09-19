@@ -7,13 +7,28 @@
 var bosco;
 (function (bosco) {
     "use strict";
+    /**
+     * Properties
+     *
+     * persisted game settings and scores
+     */
     var Properties = (function () {
         function Properties() {
         }
+        /**
+         * Initilize the properties
+         *
+         * @param name of property database
+         * @param properties table of properties
+         */
         Properties.init = function (name, properties) {
             if (Properties.db !== null)
                 return;
-            /** Initialize the db with the properties */
+            /**
+             * Initialize the db with the properties
+             *
+             * @param db database
+             */
             function initializeDb(db) {
                 if (db.isNew()) {
                     db.createTable("settings", ["name", "value"]);
@@ -32,7 +47,7 @@ var bosco;
             Properties.dbname = name;
             Properties.properties = properties;
             // if (window['chrome']) {
-            //   chromeStorageDB(Properties.dbname, localStorage, (db) => initializeDb(Properties.db = db));
+            //   chromeStorageDB(Properties.dbname, localStorage, (db) => initializeDb(Properties.db = db))
             // } else {
             initializeDb(Properties.db = new localStorageDB(Properties.dbname));
             // }
@@ -50,6 +65,11 @@ var bosco;
                 }
             })[0].value;
         };
+        /**
+         * Set the Score
+         *
+         * @param score
+         */
         Properties.setScore = function (score) {
             var today = new Date();
             var mm = (today.getMonth() + 1).toString();
@@ -73,6 +93,12 @@ var bosco;
             }
             Properties.db.commit();
         };
+        /*
+         * Set Game Leaderboard in local storage
+         *
+         * @param count
+         * @return array of scores
+         */
         Properties.getLeaderboard = function (count) {
             return Properties.db.queryAll('leaderboard', { limit: count, sort: [['score', 'DESC']] });
         };
@@ -104,7 +130,13 @@ var bosco;
     var utils;
     (function (utils) {
         "use strict";
+        /**
+         * Input Controller
+         */
         var Input = (function () {
+            /**
+             * connect the event listeners
+             */
             function Input() {
                 var _this = this;
                 this.states = {};
@@ -149,27 +181,53 @@ var bosco;
                 window.addEventListener('keyup', this.onKeyUp, true);
             }
             Object.defineProperty(Input, "mousePosition", {
+                /**
+                 * @returns the curent mouse position
+                 */
                 get: function () {
                     return Input._input.mousePosition;
                 },
                 enumerable: true,
                 configurable: true
             });
-            Input.getKeyDown = function (k) {
-                return Input._input.isDown(k.charCodeAt(0));
+            /**
+             * @param key
+             * @returns true if key is in down state
+             */
+            Input.getKeyDown = function (key) {
+                return Input._input.isDown(key.charCodeAt(0));
             };
-            Input.getKeyUp = function (k) {
-                return Input._input.isUp(k.charCodeAt(0));
+            /**
+             * @param key
+             * @returns true if key is in up state
+             */
+            Input.getKeyUp = function (key) {
+                return Input._input.isUp(key.charCodeAt(0));
             };
-            Input.getMouseButtonUp = function (m) {
+            /**
+             * @param mouseButton reserved for future use
+             * @returns true if the mouse button is in the down state
+             */
+            Input.getMouseButtonUp = function (mouseButton) {
                 return !Input._input.mouseButtonDown;
             };
-            Input.getMouseButton = function (m) {
+            /**
+             * @param mouseButton reserved for future use
+             * @returns true if the mouse button is in the down state
+             */
+            Input.getMouseButton = function (mouseButton) {
                 return Input._input.mouseDown;
             };
-            Input.getMouseButtonDown = function (m) {
+            /**
+             * @param mouseButton reserved for future use
+             * @returns true if the mouse button is in the down state
+             */
+            Input.getMouseButtonDown = function (mouseButton) {
                 return Input._input.mouseButtonDown;
             };
+            /**
+             * update should be called every game loop
+             */
             Input.update = function () {
                 Input._input.mouseDown = false;
                 Input._input.states = {};
@@ -201,6 +259,7 @@ var bosco;
                     catch (e) { }
                 }
             };
+            /** the input singleton */
             Input._input = new Input();
             return Input;
         }());
@@ -215,21 +274,34 @@ var bosco;
         var Rnd = (function () {
             function Rnd() {
             }
+            /**
+             * @returns true/false random value
+             */
             Rnd.nextBool = function () {
                 return ((~~(Math.random() * 32767)) & 1) === 1;
             };
             /*
              * Generates a random real value from 0.0, inclusive, to 1.0, exclusive.
-            */
+             *
+             * @returns random double
+             */
             Rnd.nextDouble = function () {
                 return Math.random();
             };
             /*
              * Generates a random int value from 0, inclusive, to max, exclusive.
-            */
+             *
+             * @returns random int
+             */
             Rnd.nextInt = function (max) {
                 return ~~(Math.random() * max);
             };
+            /**
+             * Generates a random number in a range
+             *
+             * @param start starting number of range
+             * @param end optional ending number in range
+             */
             Rnd.random = function (start, end) {
                 if (end === undefined) {
                     return Rnd.nextInt(start + 1);
@@ -251,14 +323,31 @@ var bosco;
     var utils;
     (function (utils) {
         "use strict";
+        /**
+         * A Simple Timer
+         * port of com.artemis.utils.Timer.java
+         */
         var Timer = (function () {
+            /**
+             * @param delay count of ms
+             * @param repeat does the timer repeat?
+             */
             function Timer(delay, repeat) {
                 if (repeat === void 0) { repeat = false; }
+                /**
+                 * abstract execute method
+                 * override to provide timed functionality
+                 */
                 this.execute = function () { };
                 this.delay = delay;
                 this.repeat = repeat;
                 this.acc = 0;
             }
+            /**
+             * update is caller every game loop
+             *
+             * @param delta time passed since last update
+             */
             Timer.prototype.update = function (delta) {
                 if (!this.done && !this.stopped) {
                     this.acc += delta;
@@ -274,23 +363,42 @@ var bosco;
                     }
                 }
             };
+            /**
+             * reset the timer
+             */
             Timer.prototype.reset = function () {
                 this.stopped = false;
                 this.done = false;
                 this.acc = 0;
             };
+            /**
+             * @returns true if timer is finished
+             */
             Timer.prototype.isDone = function () {
                 return this.done;
             };
+            /**
+             * @returns true if timer is not finished
+             */
             Timer.prototype.isRunning = function () {
                 return !this.done && this.acc < this.delay && !this.stopped;
             };
+            /**
+             * stop the timer
+             */
             Timer.prototype.stop = function () {
                 this.stopped = true;
             };
+            /**
+             * set a new delay value
+             * @param delay count
+             */
             Timer.prototype.setDelay = function (delay) {
                 this.delay = delay;
             };
+            /**
+             * @returns the remaining timer as a percentage
+             */
             Timer.prototype.getPercentageRemaining = function () {
                 if (this.done)
                     return 100;
@@ -299,6 +407,9 @@ var bosco;
                 else
                     return 1 - (this.delay - this.acc) / this.delay;
             };
+            /**
+             * @returns ths current delay
+             */
             Timer.prototype.getDelay = function () {
                 return this.delay;
             };
@@ -339,23 +450,47 @@ var bosco;
     var utils;
     (function (utils) {
         "use strict";
-        // Thanks to Riven
-        // From: http://riven8192.blogspot.com/2009/08/fastmath-sincos-lookup-tables.html
+        /**
+         * Trig lookup tables
+         * A replacement for performance impacting trig calcs
+         *
+         * Thanks to Riven
+         * From: http://riven8192.blogspot.com/2009/08/fastmath-sincos-lookup-tables.html
+         */
         var TrigLUT = (function () {
             function TrigLUT() {
             }
+            /**
+             * @param rad radians
+             * @returns the sine of the radians
+             */
             TrigLUT.sin = function (rad) {
                 return TrigLUT.sin_[(rad * TrigLUT.radToIndex) & TrigLUT.SIN_MASK];
             };
+            /**
+             * @param rad radians
+             * @returns the cosine of the radians
+             */
             TrigLUT.cos = function (rad) {
                 return TrigLUT.cos_[(rad * TrigLUT.radToIndex) & TrigLUT.SIN_MASK];
             };
+            /**
+             * @param deg degrees
+             * @returns the sine of the degrees
+             */
             TrigLUT.sinDeg = function (deg) {
                 return TrigLUT.sin_[(deg * TrigLUT.degToIndex) & TrigLUT.SIN_MASK];
             };
+            /**
+             * @param deg degrees
+             * @returns the cosine of the degrees
+             */
             TrigLUT.cosDeg = function (deg) {
                 return TrigLUT.cos_[(deg * TrigLUT.degToIndex) & TrigLUT.SIN_MASK];
             };
+            /**
+             * @param update override Math object?
+             */
             TrigLUT.init = function (update) {
                 TrigLUT.RAD = Math.PI / 180.0;
                 TrigLUT.DEG = 180.0 / Math.PI;
@@ -391,6 +526,9 @@ var bosco;
 var bosco;
 (function (bosco) {
     "use strict";
+    /**
+     * @returns true if browser running on a mobile platform
+     */
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
@@ -417,6 +555,7 @@ var bosco;
     var Properties = bosco.Properties;
     /** @type number frames per second */
     bosco.fps = 0;
+    /** Singleton game object */
     var _game;
     /**
      * Set the current controller group
@@ -453,6 +592,8 @@ var bosco;
     bosco.controller = controller;
     /**
      * Load assets and start
+     *
+     * @param config  Configuration object
      */
     function start(config) {
         if (config.properties) {
@@ -470,7 +611,7 @@ var bosco;
      * Composite an image
      * @param name
      * @param parent
-     * @returns {PIXI.Sprite}
+     * @returns PIXI.Sprite
      */
     function prefab(name, parent) {
         if (parent === void 0) { parent = bosco.viewContainer; }
@@ -512,9 +653,16 @@ var bosco;
             return sprite;
         }
     }
+    /**
+     * Game
+     *
+     * Top level game object
+     * Runs the main controller
+     */
     var Game = (function () {
         /**
          * Create the game instance
+         * @param config
          * @param resources
          */
         function Game(config, resources) {
@@ -555,7 +703,7 @@ var bosco;
                     stats.end();
             };
             /**
-             * Resize window
+             * Resize the main window
              */
             this.resize = function () {
                 var ratio = Math.min(window.innerWidth / _this.config.width, window.innerHeight / _this.config.height);

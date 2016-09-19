@@ -10,39 +10,40 @@
  *
  */
 module bosco {
-  "use strict";
+  "use strict"
 
-  import Sprite = PIXI.Sprite;
-  import Texture = PIXI.Texture;
-  import Input = bosco.utils.Input;
-  import Container = PIXI.Container;
-  import Properties = bosco.Properties;
-  import SystemRenderer = PIXI.SystemRenderer;
+  import Sprite = PIXI.Sprite
+  import Texture = PIXI.Texture
+  import Input = bosco.utils.Input
+  import Container = PIXI.Container
+  import Properties = bosco.Properties
+  import SystemRenderer = PIXI.SystemRenderer
 
 
   /** @type Object mrdoodb's stat viewer */
-  declare var Stats;
+  declare var Stats
   /** @type Object dat.gui */
-  declare var dat;
+  declare var dat
   /** @type Object EZGUI */
-  declare var EZGUI;
+  declare var EZGUI
   /** @type PIXI.Container game screen */
-  export var viewContainer:Container;
+  export var viewContainer:Container
   /** @type PIXI.Container anything that <b>must</b> be in foreground */
-  export var foreContainer:Container;
+  export var foreContainer:Container
 
   /** @type Object PIXI loader return values */
-  export var resources;
+  export var resources
   /** @type Object raw configuration hash */
-  export var config;
+  export var config
   /** @type number time change in ms for current frame */
-  export var delta:number;
+  export var delta:number
   /** @type number frames per second */
-  export var fps:number=0;
+  export var fps:number=0
   
-  export var world;
+  export var world
 
-  var _game:Game;
+  /** Singleton game object */
+  var _game:Game
 
   /**
    * Set the current controller group
@@ -51,39 +52,41 @@ module bosco {
    */
   export function controller(name, ...args) {
 
-    if (!bosco.config.controllers[name]) return;
+    if (!bosco.config.controllers[name]) return
 
     /** First, stop the existing controller */
     for (var controller of _game.controllers) {
-      controller.stop();
+      controller.stop()
     }
-    _game.controllers = [];
+    _game.controllers = []
 
     /** Get the new controller(s) */
-    var root = bosco.config.controllers[name];
-    root = Array.isArray(root) ? root : [root];
+    var root = bosco.config.controllers[name]
+    root = Array.isArray(root) ? root : [root]
     for (var className of root) {
-      var Class:any = window[config.namespace][className];
-      _game.controllers.push(new Class());
+      var Class:any = window[config.namespace][className]
+      _game.controllers.push(new Class())
     }
 
     /** Start the controller(s) */
     for (var controller of _game.controllers) {
-      controller.start(...args);
+      controller.start(...args)
     }
   }
   /**
    * Load assets and start
+   * 
+   * @param config  Configuration object
    */
   export function start(config) {
     if (config.properties) {
-      Properties.init(config.namespace, config.properties);
+      Properties.init(config.namespace, config.properties)
     }
 
     for (var asset in config.assets) {
-      PIXI.loader.add(asset, config.assets[asset]);
+      PIXI.loader.add(asset, config.assets[asset])
     }
-    PIXI.loader.load((loader, resources) => new Game(config, resources));
+    PIXI.loader.load((loader, resources) => new Game(config, resources))
   }
 
   /**
@@ -92,114 +95,120 @@ module bosco {
    * Composite an image
    * @param name
    * @param parent
-   * @returns {PIXI.Sprite}
+   * @returns PIXI.Sprite
    */
   export function prefab(name:string, parent=bosco.viewContainer): Sprite {
 
-    var s = _prefab(bosco.config.resources[name]);
-    if (parent) parent.addChild(s);
-    return s;
+    var s = _prefab(bosco.config.resources[name])
+    if (parent) parent.addChild(s)
+    return s
   }
 
   function _prefab(config): Sprite {
     if (Array.isArray(config)) {
-      var container = new Sprite();
+      var container = new Sprite()
       for (var i=0, l=config.length; i<l; i++) {
-        container.addChild(_prefab(config[i]));
+        container.addChild(_prefab(config[i]))
       }
-      return container;
+      return container
     } else {
-      var sprite = new Sprite(Texture.fromFrame(config.path));
+      var sprite = new Sprite(Texture.fromFrame(config.path))
       for (var k in config) {
         switch(k) {
           case 'anchor':
-            sprite.anchor.set(config.anchor.x, config.anchor.y);
-            break;
+            sprite.anchor.set(config.anchor.x, config.anchor.y)
+            break
           case 'scale':
-            sprite.scale.set(config.scale.x, config.scale.y);
-            break;
+            sprite.scale.set(config.scale.x, config.scale.y)
+            break
           case 'position':
-            sprite.position.set(config.position.x, config.position.y);
-            break;
+            sprite.position.set(config.position.x, config.position.y)
+            break
           case 'rotation':
-            sprite.rotation = config.rotation;
-            break;
+            sprite.rotation = config.rotation
+            break
           case 'tint':
-            sprite.tint = config.tint;
-            break;
+            sprite.tint = config.tint
+            break
         }
       }
-      return sprite;
+      return sprite
     }
   }
+
+  /**
+   * Game
+   * 
+   * Top level game object
+   * Runs the main controller
+   */
   export class Game {
-
-
-    stage:Container;
-    sprites:Container;
-    foreground:Container;
-    renderer:SystemRenderer;
-    stats;
-    config;
-    resources;
-    controllers;
-    previousTime:number;
-    private totalFrames:number=0;
-    private elapsedTime:number=0;
-    tween:boolean=false;
-    input:boolean=false;
+    stage:Container
+    sprites:Container
+    foreground:Container
+    renderer:SystemRenderer
+    stats
+    config
+    resources
+    controllers
+    previousTime:number
+    private totalFrames:number=0
+    private elapsedTime:number=0
+    tween:boolean=false
+    input:boolean=false
 
     /**
      * Create the game instance
+     * @param config
      * @param resources
      */
     constructor(config, resources) {
 
-      _game = this;
+      _game = this
 
-      this.config = bosco.config = config;
-      this.resources = bosco.resources = resources;
-      this.tween = config.tween;
-      this.input = config.input;
-      this.previousTime = 0;
-      this.controllers = [];
-      var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options);
+      this.config = bosco.config = config
+      this.resources = bosco.resources = resources
+      this.tween = config.tween
+      this.input = config.input
+      this.previousTime = 0
+      this.controllers = []
+      var renderer = this.renderer = PIXI.autoDetectRenderer(config.width, config.height, config.options)
 
-      renderer.view.style.position = 'absolute';
-      renderer.view.style.top = '0px';
-      renderer.view.style.left = '0px';
+      renderer.view.style.position = 'absolute'
+      renderer.view.style.top = '0px'
+      renderer.view.style.left = '0px'
 
-      var stage = this.stage = new Container();
-      bosco.viewContainer = this.sprites = new Container();
-      bosco.foreContainer = this.foreground = new Container();
+      var stage = this.stage = new Container()
+      bosco.viewContainer = this.sprites = new Container()
+      bosco.foreContainer = this.foreground = new Container()
 
-      this.resize();
+      this.resize()
 
-      document.body.appendChild(renderer.view);
+      document.body.appendChild(renderer.view)
 
       if (config.stats) {
-        var stats = this.stats = new Stats();
-        stats.setMode(0);
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-        document.body.appendChild(stats.domElement);
+        var stats = this.stats = new Stats()
+        stats.setMode(0)
+        stats.domElement.style.position = 'absolute'
+        stats.domElement.style.left = '0px'
+        stats.domElement.style.top = '0px'
+        document.body.appendChild(stats.domElement)
       }
 
-      window.addEventListener('resize', this.resize, true);
-      window.onorientationchange = this.resize;
-      stage.addChild(this.sprites);
-      stage.addChild(this.foreground);
+      window.addEventListener('resize', this.resize, true)
+      window.onorientationchange = this.resize
+      stage.addChild(this.sprites)
+      stage.addChild(this.foreground)
 
       if (config.ezgui && config.theme) {
         EZGUI.Theme.load([`assets/${config.theme}-theme/${config.theme}-theme.json`], () => {
-          bosco.controller('main');
-          requestAnimationFrame(this.update);
-        });
+          bosco.controller('main')
+          requestAnimationFrame(this.update)
+        })
 
       } else {
-        bosco.controller('main');
-        requestAnimationFrame(this.update);
+        bosco.controller('main')
+        requestAnimationFrame(this.update)
       }
 
 
@@ -210,50 +219,49 @@ module bosco {
      * @param time
      */
     update = (time:number) => {
-      var stats = this.stats;
-      if (stats) stats.begin();
+      var stats = this.stats
+      if (stats) stats.begin()
 
-      var temp = this.previousTime || time;
-      this.previousTime = time;
-      var delta = bosco.delta = (time - temp) * 0.001;
+      var temp = this.previousTime || time
+      this.previousTime = time
+      var delta = bosco.delta = (time - temp) * 0.001
 
-      this.totalFrames++;
-      this.elapsedTime += delta;
+      this.totalFrames++
+      this.elapsedTime += delta
       if (this.elapsedTime > 1) {
-        bosco.fps = this.totalFrames;
-        this.totalFrames = 0;
-        this.elapsedTime = 0;
+        bosco.fps = this.totalFrames
+        this.totalFrames = 0
+        this.elapsedTime = 0
       }
 
-      var controllers = this.controllers;
+      var controllers = this.controllers
       for (var i=0, l=controllers.length; i<l; i++) {
-        controllers[i].update(delta);
+        controllers[i].update(delta)
       }
       
-      this.renderer.render(this.stage);
-      if (this.input) Input.update();
-      if (this.tween) TWEEN.update();
-      requestAnimationFrame(this.update);
+      this.renderer.render(this.stage)
+      if (this.input) Input.update()
+      if (this.tween) TWEEN.update()
+      requestAnimationFrame(this.update)
 
-      if (stats) stats.end();
-    };
+      if (stats) stats.end()
+    }
 
 
     /**
-     * Resize window
+     * Resize the main window
      */
-
     resize = () => {
       var ratio = Math.min(window.innerWidth/this.config.width,
-        window.innerHeight/this.config.height);
+        window.innerHeight/this.config.height)
 
-      this.config.scale = ratio;
-      this.stage.scale.x = this.stage.scale.y = ratio;
+      this.config.scale = ratio
+      this.stage.scale.x = this.stage.scale.y = ratio
       this.renderer.resize(Math.ceil(this.config.width * ratio),
-        Math.ceil(this.config.height * ratio));
+        Math.ceil(this.config.height * ratio))
 
 
-    };
+    }
 
   }
 }

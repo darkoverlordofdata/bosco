@@ -5,29 +5,75 @@
  *
  */
 declare module bosco {
+    /**
+     * Properties
+     *
+     * persisted game settings and scores
+     */
     class Properties {
         private static db;
         private static dbname;
         private static properties;
+        /**
+         * Initilize the properties
+         *
+         * @param name of property database
+         * @param properties table of properties
+         */
         static init(name: any, properties: any): void;
         static get(prop: any): any;
         static set: (prop: any, value: any) => void;
+        /**
+         * Set the Score
+         *
+         * @param score
+         */
         static setScore(score: any): void;
         static getLeaderboard(count: any): any;
     }
 }
 declare module bosco.utils {
+    /**
+     * Input Controller
+     */
     class Input {
+        /** the input singleton */
         private static _input;
+        /**
+         * @returns the curent mouse position
+         */
         static mousePosition: {
             x: number;
             y: number;
         };
-        static getKeyDown(k: any): any;
-        static getKeyUp(k: any): boolean;
-        static getMouseButtonUp(m: any): boolean;
-        static getMouseButton(m: any): boolean;
-        static getMouseButtonDown(m: any): boolean;
+        /**
+         * @param key
+         * @returns true if key is in down state
+         */
+        static getKeyDown(key: any): any;
+        /**
+         * @param key
+         * @returns true if key is in up state
+         */
+        static getKeyUp(key: any): boolean;
+        /**
+         * @param mouseButton reserved for future use
+         * @returns true if the mouse button is in the down state
+         */
+        static getMouseButtonUp(mouseButton: any): boolean;
+        /**
+         * @param mouseButton reserved for future use
+         * @returns true if the mouse button is in the down state
+         */
+        static getMouseButton(mouseButton: any): boolean;
+        /**
+         * @param mouseButton reserved for future use
+         * @returns true if the mouse button is in the down state
+         */
+        static getMouseButtonDown(mouseButton: any): boolean;
+        /**
+         * update should be called every game loop
+         */
         static update(): void;
         states: {};
         mouseDown: boolean;
@@ -39,6 +85,9 @@ declare module bosco.utils {
         isFullScreen: boolean;
         isDown: (keyCode: any) => any;
         isUp: (keyCode: any) => boolean;
+        /**
+         * connect the event listeners
+         */
         constructor();
         private onKeyUp;
         private onKeyDown;
@@ -50,36 +99,107 @@ declare module bosco.utils {
 }
 declare module bosco.utils {
     class Rnd {
+        /**
+         * @returns true/false random value
+         */
         static nextBool(): boolean;
         static nextDouble(): number;
         static nextInt(max: any): number;
+        /**
+         * Generates a random number in a range
+         *
+         * @param start starting number of range
+         * @param end optional ending number in range
+         */
         static random(start: any, end?: any): any;
     }
 }
 declare module bosco.utils {
+    /**
+     * A Simple Timer
+     * port of com.artemis.utils.Timer.java
+     */
     class Timer {
         private delay;
         private repeat;
         private acc;
         private done;
         private stopped;
+        /**
+         * @param delay count of ms
+         * @param repeat does the timer repeat?
+         */
         constructor(delay: number, repeat?: boolean);
+        /**
+         * update is caller every game loop
+         *
+         * @param delta time passed since last update
+         */
         update(delta: number): void;
+        /**
+         * reset the timer
+         */
         reset(): void;
+        /**
+         * @returns true if timer is finished
+         */
         isDone(): boolean;
+        /**
+         * @returns true if timer is not finished
+         */
         isRunning(): boolean;
+        /**
+         * stop the timer
+         */
         stop(): void;
+        /**
+         * set a new delay value
+         * @param delay count
+         */
         setDelay(delay: number): void;
+        /**
+         * abstract execute method
+         * override to provide timed functionality
+         */
         execute: () => void;
+        /**
+         * @returns the remaining timer as a percentage
+         */
         getPercentageRemaining(): number;
+        /**
+         * @returns ths current delay
+         */
         getDelay(): number;
     }
 }
 declare module bosco.utils {
+    /**
+     * Trig lookup tables
+     * A replacement for performance impacting trig calcs
+     *
+     * Thanks to Riven
+     * From: http://riven8192.blogspot.com/2009/08/fastmath-sincos-lookup-tables.html
+     */
     class TrigLUT {
+        /**
+         * @param rad radians
+         * @returns the sine of the radians
+         */
         static sin(rad: number): number;
+        /**
+         * @param rad radians
+         * @returns the cosine of the radians
+         */
         static cos(rad: number): number;
+        /**
+         * @param deg degrees
+         * @returns the sine of the degrees
+         */
         static sinDeg(deg: number): number;
+        /**
+         * @param deg degrees
+         * @returns the cosine of the degrees
+         */
         static cosDeg(deg: number): number;
         private static RAD;
         private static DEG;
@@ -92,6 +212,9 @@ declare module bosco.utils {
         private static degToIndex;
         private static sin_;
         private static cos_;
+        /**
+         * @param update override Math object?
+         */
         static init(update: boolean): void;
     }
 }
@@ -102,6 +225,9 @@ declare module bosco.utils {
  *
  */
 declare module bosco {
+    /**
+     * @returns true if browser running on a mobile platform
+     */
     function isMobile(): boolean;
 }
 /**
@@ -140,6 +266,8 @@ declare module bosco {
     function controller(name: any, ...args: any[]): void;
     /**
      * Load assets and start
+     *
+     * @param config  Configuration object
      */
     function start(config: any): void;
     /**
@@ -148,9 +276,15 @@ declare module bosco {
      * Composite an image
      * @param name
      * @param parent
-     * @returns {PIXI.Sprite}
+     * @returns PIXI.Sprite
      */
     function prefab(name: string, parent?: Container): Sprite;
+    /**
+     * Game
+     *
+     * Top level game object
+     * Runs the main controller
+     */
     class Game {
         stage: Container;
         sprites: Container;
@@ -167,6 +301,7 @@ declare module bosco {
         input: boolean;
         /**
          * Create the game instance
+         * @param config
          * @param resources
          */
         constructor(config: any, resources: any);
@@ -176,7 +311,7 @@ declare module bosco {
          */
         update: (time: number) => void;
         /**
-         * Resize window
+         * Resize the main window
          */
         resize: () => void;
     }

@@ -1,74 +1,113 @@
 
 module bosco.utils {
-	"use strict";
+	"use strict"
 
+	/**
+	 * A Simple Timer
+	 * port of com.artemis.utils.Timer.java
+	 */
 	export class Timer {
 	
-		private delay:number;
-		private repeat:boolean;
-		private acc:number;
-		private done:boolean;
-		private stopped:boolean;
+		private delay:number
+		private repeat:boolean
+		private acc:number
+		private done:boolean
+		private stopped:boolean
 		
+		/**
+		 * @param delay count of ms
+		 * @param repeat does the timer repeat?
+		 */
 		constructor(delay:number, repeat:boolean=false) {
-			this.delay = delay;
-			this.repeat = repeat;
-			this.acc = 0;
+			this.delay = delay
+			this.repeat = repeat
+			this.acc = 0
 		}
 	
+		/**
+		 * update is caller every game loop
+		 * 
+		 * @param delta time passed since last update
+		 */
 		public update(delta:number) {
 			if (!this.done && !this.stopped) {
-				this.acc += delta;
+				this.acc += delta
 	
 				if (this.acc >= this.delay) {
-					this.acc -= this.delay;
+					this.acc -= this.delay
 	
 					if (this.repeat) {
-						this.reset();
+						this.reset()
 					} else {
-						this.done = true;
+						this.done = true
 					}
 	
-					this.execute();
+					this.execute()
 				}
 			}
 		}
 	
+		/**
+		 * reset the timer
+		 */
 		public reset() {
-			this.stopped = false;
-			this.done = false;
-			this.acc = 0;
+			this.stopped = false
+			this.done = false
+			this.acc = 0
 		}
 	
+		/**
+		 * @returns true if timer is finished
+		 */
 		public isDone():boolean {
-			return this.done;
+			return this.done
 		}
 	
+		/**
+		 * @returns true if timer is not finished
+		 */
 		public isRunning():boolean {
-			return !this.done && this.acc < this.delay && !this.stopped;
+			return !this.done && this.acc < this.delay && !this.stopped
 		}
 	
+		/**
+		 * stop the timer
+		 */
 		public stop() {
-			this.stopped = true;
+			this.stopped = true
 		}
 	
+		/**
+		 * set a new delay value
+		 * @param delay count
+		 */
 		public setDelay(delay:number) {
-			this.delay = delay;
+			this.delay = delay
 		}
 	
+		/**
+		 * abstract execute method
+		 * override to provide timed functionality
+		 */
 		public execute = () => {}
 	
+		/**
+		 * @returns the remaining timer as a percentage
+		 */
 		public getPercentageRemaining():number {
 			if (this.done)
-				return 100;
+				return 100
 			else if (this.stopped)
-				return 0;
+				return 0
 			else
-				return 1 - (this.delay - this.acc) / this.delay;
+				return 1 - (this.delay - this.acc) / this.delay
 		}
 	
+		/**
+		 * @returns ths current delay
+		 */
 		public getDelay():number {
-			return this.delay;
+			return this.delay
 		}
 	
 	}

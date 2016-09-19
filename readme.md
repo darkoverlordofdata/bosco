@@ -19,7 +19,7 @@ bosco.start(config);
     fullscreen      true/false
     scale           false or {x, y}
     stats           true/false - use mrdoob's stats
-    storage         true/false - use local/chrome storage
+    storage         true/false - use local storage
     properties      default storage values
     width           game renderer width
     height          game renderer height
@@ -36,7 +36,11 @@ bosco.start(config);
     localstoragedb  git://github.com/knadh/localStorageDB
     bosco           git://github.com/darkoverlordofdata/bosco
     ezgui           git://github.com/Ezelia/EZGUI/
-    entitas         git://github.com/darkoverlordofdata/entitas-ts
+
+## Demo
+
+https://darkoverlordofdata.com/bosco/?debug=true
+
 
 # MIT License
 
